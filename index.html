@@ -570,6 +570,23 @@ img { max-width: 100%; }
 .niche-top-post-user { font-size:13px; font-weight:600; }
 .niche-top-post-stats { font-size:12px; color:var(--fg2); }
 .niche-top-post-caption { font-size:12px; color:var(--fg2); line-height:1.5; }
+/* Perfis semelhantes */
+.similar-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:8px; margin:12px 0; }
+.similar-card { background:var(--surface2); border:2px solid var(--border); border-radius:var(--radius-sm); padding:10px; cursor:pointer; transition:border-color .15s,background .15s; position:relative; }
+.similar-card.selected { border-color:var(--accent3); background:color-mix(in srgb,var(--accent3) 8%,var(--surface2)); }
+.similar-card .sim-check { position:absolute; top:6px; right:6px; width:18px; height:18px; border-radius:50%; border:2px solid var(--border); background:var(--surface); display:flex; align-items:center; justify-content:center; font-size:10px; transition:.15s; }
+.similar-card.selected .sim-check { border-color:var(--accent3); background:var(--accent3); color:#fff; }
+.similar-card .sim-user { font-size:12px; font-weight:700; color:var(--fg); margin-bottom:2px; word-break:break-all; }
+.similar-card .sim-followers { font-size:11px; color:var(--fg3); }
+/* Base de conhecimento */
+.kb-section { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:14px; margin-top:12px; }
+.kb-title { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--fg2); margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; }
+.kb-row { display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid var(--border); }
+.kb-row:last-child { border-bottom:none; }
+.kb-username { font-size:13px; font-weight:600; flex:1; }
+.kb-meta { font-size:11px; color:var(--fg3); }
+.kb-btn-analyze { font-size:11px; color:var(--accent); font-weight:600; cursor:pointer; padding:2px 8px; border:1px solid var(--accent); border-radius:20px; background:none; }
+.kb-btn-remove { font-size:11px; color:var(--fg3); cursor:pointer; background:none; border:none; padding:2px 6px; }
 .output-card {
   background: var(--surface2); border: 1.5px solid var(--border);
   border-radius: var(--radius-sm); padding: 16px; position: relative;
@@ -1168,6 +1185,14 @@ img { max-width: 100%; }
           <button class="btn btn-primary" onclick="runNicheAgent()">🔍 Analisar Nicho</button>
         </div>
         <div id="na-output" class="tool-output hidden"></div>
+        <div id="na-similar-section" class="hidden" style="margin-top:12px"></div>
+        <div id="na-kb-section" class="kb-section hidden">
+          <div class="kb-title">
+            <span>📚 Base de conhecimento</span>
+            <span id="na-kb-count" style="font-weight:400;font-size:11px;color:var(--fg3)"></span>
+          </div>
+          <div id="na-kb-list"></div>
+        </div>
       </div>
     </div>
 
@@ -1754,6 +1779,7 @@ function switchTool(name) {
 
   // Auto-preenche hashtag ao abrir aba Nicho
   if (name === 'niche') {
+    loadNicheKB();
     const field = document.getElementById('na-hashtag');
     if (field && !field.value) {
       const detected = autoDetectNiche();
@@ -2657,7 +2683,223 @@ function renderNicheResults(data, query, mode) {
       <div class="niche-pattern" style="border-color:var(--accent3);margin-top:4px">
         💡 <strong>Recomendação:</strong> ${dominante ? dominante[0] + 's dominam ' + dominante[1] + '% dos posts. ' : ''}${recomendacao}
       </div>
+
+      ${mode === 'profile' ? `
+      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-secondary" onclick="findSimilarProfiles('${query}', ${JSON.stringify(topTags)})">
+          🔎 Buscar perfis semelhantes
+        </button>
+        <button class="btn btn-secondary" onclick="saveNicheProfile('${query}', ${JSON.stringify({followers: profileInfo?.followers, postsCount: profileInfo?.postsCount, bio: profileInfo?.bio, avgLikes, avgComments, topHashtags: topTags, formatBreakdown})})" id="btn-save-${query}">
+          💾 Salvar na base de conhecimento
+        </button>
+      </div>` : ''}
     </div>`;
+}
+
+// ══════════════════════════════════════════════════
+// Nicho — Perfis semelhantes + Base de conhecimento
+// ══════════════════════════════════════════════════
+
+async function findSimilarProfiles(username, topHashtags) {
+  const section = document.getElementById('na-similar-section');
+  section.className = '';
+  section.innerHTML = `<div style="text-align:center;padding:20px;color:var(--fg2)">⏳ Buscando perfis semelhantes via hashtags do nicho…</div>`;
+
+  // Usa as top 3 hashtags do perfil para buscar perfis semelhantes
+  const tags = (topHashtags || []).slice(0, 3);
+  if (!tags.length) {
+    section.innerHTML = `<div style="padding:12px;color:var(--fg3);font-size:13px">Sem hashtags suficientes para buscar semelhantes.</div>`;
+    return;
+  }
+
+  try {
+    const results = [];
+    // Busca perfis via hashtag scraper para cada tag, pega os usernames únicos
+    for (const tag of tags) {
+      const res = await fetch(`${CONFIG.N8N_WEBHOOK_BASE}/niche-insights`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: 'hashtag', query: tag, limit: 30 }),
+      });
+      const data = await res.json();
+      if (data.topPosts) {
+        data.topPosts.forEach(p => {
+          if (p.username && p.username !== username && !results.find(r => r.username === p.username)) {
+            results.push({ username: p.username, likes: p.likes, comments: p.comments });
+          }
+        });
+      }
+    }
+
+    if (!results.length) {
+      section.innerHTML = `<div style="padding:12px;color:var(--fg3);font-size:13px">Nenhum perfil semelhante encontrado. Tente hashtags diferentes.</div>`;
+      return;
+    }
+
+    // Ordena por engajamento estimado, pega até 20
+    results.sort((a, b) => (b.likes + b.comments * 3) - (a.likes + a.comments * 3));
+    const top20 = results.slice(0, 20);
+
+    renderSimilarProfiles(top20, username);
+  } catch(e) {
+    section.innerHTML = `<div style="padding:12px;color:var(--red);font-size:13px">Erro ao buscar semelhantes: ${e.message}</div>`;
+  }
+}
+
+function renderSimilarProfiles(profiles, sourceUsername) {
+  const section = document.getElementById('na-similar-section');
+  const selected = new Set();
+
+  const render = () => {
+    section.innerHTML = `
+      <div class="output-card">
+        <div class="output-card-label" style="margin-bottom:10px">🔎 Perfis semelhantes a @${sourceUsername} — selecione para analisar</div>
+        <div class="similar-grid">
+          ${profiles.map(p => `
+            <div class="similar-card ${selected.has(p.username) ? 'selected' : ''}" onclick="toggleSimilar('${p.username}', this)">
+              <div class="sim-check">${selected.has(p.username) ? '✓' : ''}</div>
+              <div class="sim-user">@${p.username}</div>
+              <div class="sim-followers">❤️ ${fmtNum(p.likes||0)} avg</div>
+            </div>`).join('')}
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+          <button class="btn btn-primary" onclick="analyzeSelectedProfiles()">
+            🔍 Analisar selecionados (<span id="sel-count">0</span>)
+          </button>
+          <button class="btn btn-secondary" onclick="saveSelectedToKB()">
+            💾 Salvar selecionados na base
+          </button>
+        </div>
+      </div>`;
+    document.getElementById('sel-count').textContent = selected.size;
+  };
+
+  // Expõe o estado de seleção para os handlers
+  window._nicheSelected = selected;
+  window._nicheProfiles = profiles;
+  render();
+
+  window.toggleSimilar = (username, card) => {
+    if (selected.has(username)) { selected.delete(username); card.classList.remove('selected'); card.querySelector('.sim-check').textContent = ''; }
+    else { selected.add(username); card.classList.add('selected'); card.querySelector('.sim-check').textContent = '✓'; }
+    document.getElementById('sel-count').textContent = selected.size;
+  };
+
+  window.analyzeSelectedProfiles = async () => {
+    if (!selected.size) return;
+    const usernames = [...selected];
+    // Carrega o primeiro e abre análise
+    document.getElementById('na-profile').value = usernames[0];
+    document.getElementById('na-mode').value = 'profile';
+    toggleNicheMode('profile');
+    await runNicheAgent();
+    if (usernames.length > 1) {
+      section.innerHTML += `<div style="padding:8px;font-size:12px;color:var(--fg2)">💡 Para ver os outros, clique em cada um na grade acima e pressione Analisar Nicho.</div>`;
+    }
+  };
+
+  window.saveSelectedToKB = async () => {
+    if (!selected.size) { alert('Selecione ao menos um perfil.'); return; }
+    const usernames = [...selected];
+    let saved = 0;
+    for (const u of usernames) {
+      await saveNicheProfile(u, { avgLikes: window._nicheProfiles.find(p=>p.username===u)?.likes || 0 });
+      saved++;
+    }
+    alert(`${saved} perfil(is) salvo(s) na base de conhecimento.`);
+    loadNicheKB();
+  };
+}
+
+async function saveNicheProfile(username, meta = {}) {
+  const ownerId = currentUserId;
+  if (!ownerId) return;
+  const btn = document.getElementById(`btn-save-${username}`);
+  if (btn) { btn.textContent = '⏳ Salvando…'; btn.disabled = true; }
+
+  try {
+    await supabaseFetch('niche_profiles', {
+      method: 'POST',
+      body: JSON.stringify({
+        owner_ig_user_id: ownerId,
+        username,
+        followers: meta.followers || null,
+        posts_count: meta.postsCount || null,
+        bio: meta.bio || null,
+        avg_likes: meta.avgLikes || null,
+        avg_comments: meta.avgComments || null,
+        top_hashtags: meta.topHashtags || null,
+        format_breakdown: meta.formatBreakdown || null,
+      }),
+    });
+    if (btn) btn.textContent = '✅ Salvo!';
+    loadNicheKB();
+  } catch(e) {
+    if (btn) { btn.textContent = '💾 Salvar na base'; btn.disabled = false; }
+    console.error('[saveNicheProfile]', e);
+  }
+}
+
+async function loadNicheKB() {
+  const ownerId = currentUserId;
+  if (!ownerId) return;
+  const kbSection = document.getElementById('na-kb-section');
+  const kbList = document.getElementById('na-kb-list');
+  const kbCount = document.getElementById('na-kb-count');
+
+  try {
+    const data = await supabaseFetch(`niche_profiles?owner_ig_user_id=eq.${ownerId}&order=added_at.desc`);
+    const profiles = Array.isArray(data) ? data : [];
+
+    if (!profiles.length) {
+      kbSection.classList.add('hidden');
+      return;
+    }
+
+    kbSection.classList.remove('hidden');
+    kbCount.textContent = `${profiles.length} perfil(s)`;
+    kbList.innerHTML = profiles.map(p => `
+      <div class="kb-row">
+        <div class="kb-username">@${p.username}</div>
+        <div class="kb-meta">${p.followers ? fmtNum(p.followers) + ' seg · ' : ''}${p.avg_likes ? '❤️ ' + fmtNum(p.avg_likes) + ' avg' : ''}</div>
+        <button class="kb-btn-analyze" onclick="analyzeFromKB('${p.username}')">Analisar</button>
+        <button class="kb-btn-remove" onclick="removeFromKB('${p.id}', this)" title="Remover">✕</button>
+      </div>`).join('');
+  } catch(e) {
+    console.error('[loadNicheKB]', e);
+  }
+}
+
+async function analyzeFromKB(username) {
+  document.getElementById('na-profile').value = username;
+  document.getElementById('na-mode').value = 'profile';
+  toggleNicheMode('profile');
+  await runNicheAgent();
+}
+
+async function removeFromKB(id, btn) {
+  btn.disabled = true;
+  try {
+    await supabaseFetch(`niche_profiles?id=eq.${id}`, { method: 'DELETE' });
+    loadNicheKB();
+  } catch(e) { btn.disabled = false; }
+}
+
+// Helper Supabase fetch genérico
+async function supabaseFetch(path, opts = {}) {
+  const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/${path}`, {
+    ...opts,
+    headers: {
+      'apikey': CONFIG.SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': opts.method === 'POST' ? 'resolution=merge-duplicates' : '',
+      ...(opts.headers || {}),
+    },
+  });
+  if (!res.ok && res.status !== 204) throw new Error(`Supabase ${res.status}`);
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
 }
 
 // ── Auto-preenche hashtag se aba nicho for aberta ──
