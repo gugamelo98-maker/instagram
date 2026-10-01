@@ -509,6 +509,156 @@ img { max-width: 100%; }
   text-align: center; padding: 40px;
   color: var(--fg2); font-size: 14px;
 }
+
+/* ── Tools Section ─────────────────────────────── */
+.tool-tabs {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px;
+}
+.tool-tab {
+  padding: 7px 13px; border: 1.5px solid var(--border); border-radius: 20px;
+  background: var(--surface); color: var(--fg2); font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: all .15s;
+}
+.tool-tab:hover { border-color: var(--accent); color: var(--accent); }
+.tool-tab.active {
+  background: var(--accent); border-color: var(--accent);
+  color: #fff; font-weight: 600;
+}
+.tool-panel { display: none; }
+.tool-panel.active { display: block; }
+.tool-desc {
+  font-size: 13px; color: var(--fg2); margin-bottom: 16px;
+  padding: 10px 14px; background: var(--surface2); border-radius: var(--radius-sm);
+  border-left: 3px solid var(--accent);
+}
+.tool-form { display: flex; flex-direction: column; gap: 12px; }
+.form-row { display: flex; flex-direction: column; gap: 5px; }
+.form-row label {
+  font-size: 12px; font-weight: 600; color: var(--fg2); text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.form-row input, .form-row select, .form-row textarea {
+  padding: 9px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--surface); color: var(--fg); font-size: 14px; font-family: inherit;
+  transition: border-color .15s; resize: vertical;
+}
+.form-row input:focus, .form-row select:focus, .form-row textarea:focus {
+  outline: none; border-color: var(--accent);
+}
+.tool-output {
+  margin-top: 20px; display: flex; flex-direction: column; gap: 14px;
+}
+.tool-output.hidden { display: none; }
+.output-card {
+  background: var(--surface2); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); padding: 16px; position: relative;
+}
+.output-card-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--accent); margin-bottom: 8px;
+}
+.output-card-body {
+  font-size: 14px; line-height: 1.6; color: var(--fg); white-space: pre-wrap;
+}
+.output-card-copy {
+  position: absolute; top: 12px; right: 12px;
+  padding: 4px 10px; font-size: 11px; border-radius: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--fg2); cursor: pointer; transition: all .15s;
+}
+.output-card-copy:hover { border-color: var(--accent); color: var(--accent); }
+.output-card-copy.copied { background: var(--green); color: #fff; border-color: var(--green); }
+.slide-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); padding: 14px;
+}
+.slide-num {
+  font-size: 11px; font-weight: 700; color: var(--accent);
+  text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px;
+}
+.slide-text { font-size: 14px; color: var(--fg); line-height: 1.5; }
+.audit-item {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.audit-item:last-child { border-bottom: none; }
+.audit-icon { font-size: 18px; flex-shrink: 0; }
+.audit-body { flex: 1; }
+.audit-title { font-size: 14px; font-weight: 600; color: var(--fg); }
+.audit-note { font-size: 13px; color: var(--fg2); margin-top: 2px; }
+.audit-fix {
+  margin-top: 6px; padding: 8px 10px;
+  background: var(--surface); border-left: 3px solid var(--green);
+  border-radius: 6px; font-size: 13px; color: var(--fg);
+}
+.week-grid { display: flex; flex-direction: column; gap: 8px; }
+.week-day {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px; background: var(--surface); border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+}
+.week-day-name {
+  font-size: 12px; font-weight: 700; color: var(--accent);
+  min-width: 36px; padding-top: 2px;
+}
+.week-day-content { flex: 1; }
+.week-day-format {
+  font-size: 11px; font-weight: 600; color: var(--fg2);
+  text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px;
+}
+.week-day-idea { font-size: 13px; color: var(--fg); line-height: 1.4; }
+.week-day-goal {
+  margin-top: 4px; font-size: 11px; color: var(--fg3);
+}
+.hashtag-set { display: flex; flex-direction: column; gap: 10px; }
+.hashtag-tier-card {
+  padding: 12px 14px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+}
+.hashtag-tier-card.niche { border-left-color: #833ab4; }
+.hashtag-tier-card.mid   { border-left-color: #3b82f6; }
+.hashtag-tier-card.broad { border-left-color: #f59e0b; }
+.hashtag-tier-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+}
+.hashtag-tier-name { font-size: 12px; font-weight: 700; color: var(--fg2); }
+.hashtag-tier-range { font-size: 11px; color: var(--fg3); }
+.hashtag-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.hashtag-tag {
+  padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500;
+  background: var(--surface2); color: var(--fg); border: 1px solid var(--border);
+}
+.formula-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 12px;
+  background: var(--accent); color: #fff; font-size: 11px; font-weight: 700;
+  margin-bottom: 8px;
+}
+.hook-analysis { display: flex; flex-direction: column; gap: 10px; }
+.hook-row { display: flex; gap: 10px; align-items: flex-start; }
+.hook-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+  color: var(--fg2); min-width: 80px; padding-top: 2px;
+}
+.hook-val { font-size: 13px; color: var(--fg); flex: 1; line-height: 1.5; }
+.ai-tell { color: var(--red); font-weight: 600; }
+.ai-clean { color: var(--green); font-weight: 600; }
+.profile-audit { display: flex; flex-direction: column; gap: 2px; }
+.pa-item {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.pa-item:last-child { border-bottom: none; }
+.pa-status { font-size: 20px; flex-shrink: 0; }
+.pa-body { flex: 1; }
+.pa-name { font-size: 14px; font-weight: 600; color: var(--fg); }
+.pa-issue { font-size: 13px; color: var(--fg2); margin-top: 2px; }
+.pa-rewrite {
+  margin-top: 6px; padding: 8px 10px;
+  background: var(--surface); border-left: 3px solid var(--accent);
+  border-radius: 6px; font-size: 13px; color: var(--fg);
+  font-style: italic;
+}
 </style>
 </head>
 <body>
@@ -723,6 +873,247 @@ img { max-width: 100%; }
       </div>
       <div class="caption-suggestions" id="caption-suggestions">
         <div class="caption-loading">✨ Gerando sugestões...</div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         FERRAMENTAS IG — Todos os skills
+         ══════════════════════════════════════ -->
+    <div class="score-section" style="margin-top:20px" id="tools-section">
+      <div class="section-title"><span>🛠️</span> Ferramentas de Conteúdo</div>
+      <p style="font-size:13px;color:var(--fg2);margin-bottom:16px">8 ferramentas baseadas nas melhores práticas do Instagram 2026.</p>
+
+      <!-- Tool tabs -->
+      <div class="tool-tabs" id="tool-tabs">
+        <button class="tool-tab active" onclick="switchTool('caption')">✍️ Legenda</button>
+        <button class="tool-tab" onclick="switchTool('carousel')">🖼️ Carrossel</button>
+        <button class="tool-tab" onclick="switchTool('hook')">🪝 Hook</button>
+        <button class="tool-tab" onclick="switchTool('hashtag')">🏷️ Hashtags</button>
+        <button class="tool-tab" onclick="switchTool('humanizer')">🤖 Humanizar</button>
+        <button class="tool-tab" onclick="switchTool('planner')">📅 Plano</button>
+        <button class="tool-tab" onclick="switchTool('repurpose')">♻️ Repurpose</button>
+        <button class="tool-tab" onclick="switchTool('profile')">👤 Perfil</button>
+      </div>
+
+      <!-- ── CAPTION WRITER ── -->
+      <div class="tool-panel active" id="tool-caption">
+        <div class="tool-desc">Fórmulas IG1–IG4 para legendas de 2026. Gancho nos primeiros 125 caracteres, corpo skimmable, CTA único.</div>
+        <div class="tool-form">
+          <div class="form-row">
+            <label>Objetivo do post</label>
+            <select id="cw-goal">
+              <option value="saves">💾 Saves — lista, framework, método repetível</option>
+              <option value="shares">📤 Shares — opinião contrária, mito que quebra</option>
+              <option value="comments">💬 Comentários — momento relatable, confissão</option>
+              <option value="follows">👥 Follows — história de transformação com prova</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Tópico / assunto do post</label>
+            <input type="text" id="cw-topic" placeholder="ex: Como reduzi meu tempo de edição em 40%">
+          </div>
+          <div class="form-row">
+            <label>Número ou dado específico (opcional)</label>
+            <input type="text" id="cw-number" placeholder="ex: 47 minutos, R$ 873, 3 semanas">
+          </div>
+          <div class="form-row">
+            <label>Tipo de conteúdo</label>
+            <select id="cw-type">
+              <option value="image">📷 Foto</option>
+              <option value="reel">🎬 Reel</option>
+              <option value="carousel">🖼️ Carrossel</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="runCaptionWriter()">✨ Gerar legendas</button>
+        </div>
+        <div id="cw-output" class="tool-output hidden"></div>
+      </div>
+
+      <!-- ── CAROUSEL PLANNER ── -->
+      <div class="tool-panel" id="tool-carousel">
+        <div class="tool-desc">Planejamento slide a slide com fórmulas IG5–IG8. Slide 1 promete, slides do meio entregam, último slide fecha com save bait.</div>
+        <div class="tool-form">
+          <div class="form-row">
+            <label>Formato do carrossel</label>
+            <select id="cp-formula">
+              <option value="IG5">IG5 — Listicle (lista numerada → saves)</option>
+              <option value="IG6">IG6 — Before/After (transformação → follows)</option>
+              <option value="IG7">IG7 — Myth-Buster (mitos → shares)</option>
+              <option value="IG8">IG8 — Framework (método próprio → saves)</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Tópico principal</label>
+            <input type="text" id="cp-topic" placeholder="ex: Como organizar sua semana de conteúdo">
+          </div>
+          <div class="form-row">
+            <label>Número de slides (3–10)</label>
+            <input type="number" id="cp-slides" value="6" min="3" max="10">
+          </div>
+          <div class="form-row">
+            <label>Resultado / promessa específica</label>
+            <input type="text" id="cp-result" placeholder="ex: 3 horas economizadas por semana">
+          </div>
+          <button class="btn btn-primary" onclick="runCarouselPlanner()">🖼️ Montar carrossel</button>
+        </div>
+        <div id="cp-output" class="tool-output hidden"></div>
+      </div>
+
+      <!-- ── HOOK EXTRACTOR ── -->
+      <div class="tool-panel" id="tool-hook">
+        <div class="tool-desc">Identifica qual das 10 fórmulas está em um post e por que funcionou. Use para replicar o que já deu certo.</div>
+        <div class="tool-form">
+          <div class="form-row">
+            <label>Cole a legenda ou o texto do post</label>
+            <textarea id="he-caption" rows="5" placeholder="Cole aqui a legenda de um post que performou bem..."></textarea>
+          </div>
+          <div class="form-row">
+            <label>Tipo de post</label>
+            <select id="he-type">
+              <option value="caption">Foto/Post — legenda</option>
+              <option value="carousel">Carrossel — slide 1</option>
+              <option value="reel">Reel — texto da tela ou spoken line</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="runHookExtractor()">🔍 Analisar hook</button>
+        </div>
+        <div id="he-output" class="tool-output hidden"></div>
+      </div>
+
+      <!-- ── HASHTAG STRATEGIST ── -->
+      <div class="tool-panel" id="tool-hashtag">
+        <div class="tool-desc">3–5 hashtags estratégicas: 2–3 nicho (&lt;50K posts), 1–2 mid (50K–500K), 0–1 broad. Sem blocos genéricos de 30 tags.</div>
+        <div class="tool-form">
+          <div class="form-row">
+            <label>Assunto exato do post</label>
+            <input type="text" id="hs-topic" placeholder="ex: Rotina de crédito consignado para servidores públicos">
+          </div>
+          <div class="form-row">
+            <label>Tamanho da conta</label>
+            <select id="hs-size">
+              <option value="small">Pequena (&lt;5K seguidores)</option>
+              <option value="mid">Média (5K–50K)</option>
+              <option value="large">Grande (&gt;50K)</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Nicho principal</label>
+            <input type="text" id="hs-niche" placeholder="ex: finanças pessoais, fitness, fotografia, moda...">
+          </div>
+          <button class="btn btn-primary" onclick="runHashtagStrategist()">🏷️ Gerar hashtags</button>
+        </div>
+        <div id="hs-output" class="tool-output hidden"></div>
+      </div>
+
+      <!-- ── HUMANIZER ── -->
+      <div class="tool-panel" id="tool-humanizer">
+        <div class="tool-desc">Remove marcas de IA do texto: vocabulário 2026 de IA, traço-em excedente, stacks estacato, pontes de revelação. Deixa o texto soando humano.</div>
+        <div class="tool-form">
+          <div class="form-row">
+            <label>Cole o texto para auditar</label>
+            <textarea id="hum-text" rows="6" placeholder="Cole aqui sua legenda, bio ou caption..."></textarea>
+          </div>
+          <div class="form-row">
+            <label>Modo</label>
+            <select id="hum-mode">
+              <option value="audit">Auditoria — pontua e explica os problemas</option>
+              <option value="rewrite">Reescrita — entrega versão corrigida</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="runHumanizer()">🤖 Humanizar texto</button>
+        </div>
+        <div id="hum-output" class="tool-output hidden"></div>
+      </div>
+
+      <!-- ── CONTENT PLANNER ── -->
+      <div class="tool-panel" id="tool-planner">
+        <div class="tool-desc">Plano semanal com formato por dia (Reel, carrossel, foto), horário ideal e objetivo de cada post alinhado ao algoritmo 2026.</div>
+        <div class="tool-form">
+          <div class="form-row">
+            <label>Nicho / tema da conta</label>
+            <input type="text" id="pl-niche" placeholder="ex: crédito consignado, marketing digital, fitness">
+          </div>
+          <div class="form-row">
+            <label>Frequência de posts por semana</label>
+            <select id="pl-freq">
+              <option value="3">3 posts/semana</option>
+              <option value="5" selected>5 posts/semana</option>
+              <option value="7">7 posts/semana (diário)</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Objetivo principal da conta</label>
+            <select id="pl-goal">
+              <option value="followers">Crescer seguidores</option>
+              <option value="leads">Gerar leads / clientes</option>
+              <option value="authority">Construir autoridade</option>
+              <option value="sales">Vender produto/serviço</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="runContentPlanner()">📅 Gerar plano semanal</button>
+        </div>
+        <div id="pl-output" class="tool-output hidden"></div>
+      </div>
+
+      <!-- ── REPURPOSER ── -->
+      <div class="tool-panel" id="tool-repurpose">
+        <div class="tool-desc">Adapta conteúdo de outros formatos (LinkedIn, blog, YouTube, podcast) para o Instagram — formato, tamanho de legenda e linguagem corretos.</div>
+        <div class="tool-form">
+          <div class="form-row">
+            <label>Plataforma de origem</label>
+            <select id="rp-source">
+              <option value="linkedin">LinkedIn — post ou artigo</option>
+              <option value="blog">Blog — artigo ou post</option>
+              <option value="youtube">YouTube — roteiro ou descrição</option>
+              <option value="twitter">X / Twitter — thread ou tweet</option>
+              <option value="podcast">Podcast — episódio ou trecho</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Cole o conteúdo original</label>
+            <textarea id="rp-content" rows="6" placeholder="Cole aqui o post do LinkedIn, artigo do blog, etc..."></textarea>
+          </div>
+          <div class="form-row">
+            <label>Formato Instagram de destino</label>
+            <select id="rp-target">
+              <option value="caption">Post/Foto + legenda</option>
+              <option value="carousel">Carrossel (3–8 slides)</option>
+              <option value="reel">Roteiro de Reel</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="runRepurposer()">♻️ Adaptar para Instagram</button>
+        </div>
+        <div id="rp-output" class="tool-output hidden"></div>
+      </div>
+
+      <!-- ── PROFILE OPTIMIZER ── -->
+      <div class="tool-panel" id="tool-profile">
+        <div class="tool-desc">Auditoria completa dos 9 elementos do perfil: foto, campo NOME, handle, bio, link, categoria, destaques, grid e posts fixados.</div>
+        <div class="tool-form">
+          <div class="form-row">
+            <label>Objetivo da conta</label>
+            <select id="po-goal">
+              <option value="followers">Crescer seguidores</option>
+              <option value="clients">Captar clientes</option>
+              <option value="authority">Construir autoridade</option>
+              <option value="sales">Vender produto</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Sua bio atual (cole aqui)</label>
+            <textarea id="po-bio" rows="3" placeholder="Cole sua bio do Instagram aqui..."></textarea>
+          </div>
+          <div class="form-row">
+            <label>Campo NOME atual (ex: "João Silva")</label>
+            <input type="text" id="po-name" placeholder="Como aparece no seu perfil hoje">
+          </div>
+          <div class="form-row">
+            <label>Palavra-chave do seu nicho</label>
+            <input type="text" id="po-keyword" placeholder="ex: Crédito Consignado, Marketing Digital, Personal Trainer">
+          </div>
+          <button class="btn btn-primary" onclick="runProfileOptimizer()">👤 Auditar perfil</button>
+        </div>
+        <div id="po-output" class="tool-output hidden"></div>
       </div>
     </div>
 
@@ -1289,6 +1680,709 @@ function copyCaption(id, btn) {
     btn.textContent = '✅ Selecionado!';
     setTimeout(() => { btn.textContent = '📋 Copiar'; }, 2000);
   });
+}
+
+// ══════════════════════════════════════════════════
+// FERRAMENTAS IG — 8 Skills
+// ══════════════════════════════════════════════════
+
+function switchTool(name) {
+  document.querySelectorAll('.tool-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tool-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+function copyOutputCard(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✅ Copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 Copiar'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    btn.textContent = '✅ Copiado!';
+    setTimeout(() => { btn.textContent = '📋 Copiar'; }, 2000);
+  });
+}
+
+// ── 1. Caption Writer (IG1–IG4) ──────────────────
+function runCaptionWriter() {
+  const goal    = document.getElementById('cw-goal').value;
+  const topic   = document.getElementById('cw-topic').value.trim();
+  const number  = document.getElementById('cw-number').value.trim();
+  const type    = document.getElementById('cw-type').value;
+  const out     = document.getElementById('cw-output');
+
+  if (!topic) { alert('Digite o tópico do post.'); return; }
+
+  // Get stored profile bio for niche context
+  let bio = '';
+  try { bio = (JSON.parse(localStorage.getItem('ig_session') || '{}')).biography || ''; } catch(e){}
+  const handle = document.getElementById('profile-handle')?.textContent?.replace('@','') || 'você';
+
+  const captions = buildIG1to4(goal, topic, number, type, bio, handle);
+  out.classList.remove('hidden');
+  out.innerHTML = captions.map((c, i) => {
+    const id = 'cw-out-' + i;
+    return `<div class="output-card">
+      <div class="output-card-label">${c.formula} · ${c.label}</div>
+      <button class="output-card-copy" onclick="copyOutputCard(this, document.getElementById('${id}').textContent)">📋 Copiar</button>
+      <div class="output-card-body" id="${id}">${escapeHtml(c.text)}</div>
+    </div>`;
+  }).join('');
+  out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function buildIG1to4(goal, topic, number, type, bio, handle) {
+  const num = number || (topic.match(/\d+/) ? topic.match(/\d+/)[0] : '3');
+  const isReel = type === 'reel';
+  const results = [];
+
+  if (goal === 'saves') {
+    // IG1 — Number-First Result
+    results.push({
+      formula: 'IG1', label: 'Number-First (Saves)',
+      text: `${number ? number : num + ' passos'} para ${topic.toLowerCase()}.\n\nAqui está exatamente o que mudei:\n\n${isReel ? '(Vídeo mostra cada passo — assiste até o final)' : 'Salva esse post e aplica hoje.'}\n\nA maioria das pessoas pula o passo 2 — é exatamente aí que está a diferença.\n\n#dicas #produtividade #aprendizado`
+    });
+    results.push({
+      formula: 'IG8', label: 'Framework Steal-This (Saves)',
+      text: `O método que uso para ${topic.toLowerCase()}:\n\nParte 1: Diagnóstico — entende onde você está agora\nParte 2: Estratégia — define o que vai mudar\nParte 3: Execução — aplica em blocos de tempo fixos\nParte 4: Revisão — ajusta o que não funcionou\n\nSalva esse post para usar como referência quando precisar.\n\n#metodo #produtividade #dicas`
+    });
+  } else if (goal === 'shares') {
+    // IG2 — Contrarian Truth
+    results.push({
+      formula: 'IG2', label: 'Contrarian Truth (Shares)',
+      text: `O conselho mais repetido sobre ${topic.toLowerCase()} está errado.\n\n${number ? 'O dado que ninguém fala: ' + number + '.' : 'O que realmente funciona é o oposto do que ensinam.'}\n\nManda esse post para alguém que precisa ouvir isso.\n\n#verdade #dicas #perspectiva`
+    });
+    results.push({
+      formula: 'IG7', label: 'Myth-Buster (Shares)',
+      text: `3 mitos sobre ${topic.toLowerCase()} que estão te custando resultado:\n\nMito 1: Você precisa de muito tempo pra começar.\nVerdade: 20 minutos por dia constantes batem 3 horas ocasionais.\n\nMito 2: Só funciona para quem já tem experiência.\nVerdade: Iniciantes têm a vantagem de não ter vícios a quebrar.\n\nMito 3: Os resultados aparecem rápido.\nVerdade: ${number ? 'Leva em média ' + number + '.' : 'O compounding começa depois de 60 dias.'}\n\nManda para quem ainda acredita no mito 1 👇\n\n#mitos #verdades #aprendizado`
+    });
+  } else if (goal === 'comments') {
+    // IG3 — Relatable Cold-Open
+    results.push({
+      formula: 'IG3', label: 'Relatable Cold-Open (Comentários)',
+      text: `Começar ${topic.toLowerCase()} achando que ia demorar 10 minutos… e perceber ${number || '2 horas'} depois que ainda estava no começo.\n\nMe conta nos comentários: isso já aconteceu com você? 👇\n\n#relatable #comunidade #vidareal`
+    });
+    results.push({
+      formula: 'IG4', label: 'Mini-Story Confession (Comentários)',
+      text: `${number ? number + ' atrás' : 'No começo'}: tentei ${topic.toLowerCase()} do jeito que todo mundo faz. Deu errado.\n\nO que aprendi foi simples mas ninguém fala diretamente: consistência bate talento quando o talento é inconsistente.\n\nQual foi seu maior erro nessa área? Me conta aqui 👇\n\n#aprendizado #historialeal #crescimento`
+    });
+  } else { // follows
+    // IG4 — Mini-Story Confession
+    results.push({
+      formula: 'IG4', label: 'Mini-Story Confession (Follows)',
+      text: `Eu errei muito tentando ${topic.toLowerCase()}.\n\n${number ? number + ' de tentativas erradas' : 'Meses no caminho errado'} antes de entender o que realmente importa.\n\nA virada foi quando parei de seguir receitas prontas e comecei a testar o que fazia sentido para mim.\n\nSe você está nessa fase, me segue — posto o processo real, não só os resultados bonitos.\n\n#jornada #honestidade #processo`
+    });
+    results.push({
+      formula: 'IG6', label: 'Before/After (Follows)',
+      text: `Resultado: ${topic}${number ? ' em ' + number : ''}.\n\nDe onde parti: zero estrutura, zero consistência.\n\nO que mudou:\n→ Passo 1: Defini o que queria de verdade\n→ Passo 2: Criei um sistema mínimo que coubesse na rotina\n→ Passo 3: Revisão semanal de 15 minutos\n\nMe segue se quiser acompanhar o método completo.\n\n#transformacao #antes #depois #evolucao`
+    });
+  }
+
+  return results;
+}
+
+// ── 2. Carousel Planner (IG5–IG8) ─────────────────
+function runCarouselPlanner() {
+  const formula = document.getElementById('cp-formula').value;
+  const topic   = document.getElementById('cp-topic').value.trim();
+  const slides  = parseInt(document.getElementById('cp-slides').value) || 6;
+  const result  = document.getElementById('cp-result').value.trim();
+  const out     = document.getElementById('cp-output');
+
+  if (!topic) { alert('Digite o tópico do carrossel.'); return; }
+
+  const deck = buildCarouselDeck(formula, topic, slides, result);
+  out.classList.remove('hidden');
+  out.innerHTML = `
+    <div class="output-card">
+      <div class="output-card-label">${formula} · ${deck.name} · ${deck.goal}</div>
+      <div class="output-card-body">${escapeHtml(deck.caption)}</div>
+    </div>
+    <div style="font-size:13px;font-weight:700;color:var(--fg2);margin:4px 0">Slides:</div>
+    ${deck.slides.map((s, i) => `
+      <div class="slide-card">
+        <div class="slide-num">Slide ${i + 1}${i === 0 ? ' — HOOK' : i === deck.slides.length - 1 ? ' — FECHAMENTO' : ''}</div>
+        <div class="slide-text">${escapeHtml(s)}</div>
+      </div>`).join('')}`;
+  out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function buildCarouselDeck(formula, topic, numSlides, result) {
+  const res = result || 'resultado concreto';
+  const mid = numSlides - 2;
+  const items = Array.from({length: mid}, (_, i) => `Item ${i+1}: [descreva aqui com exemplo específico]`);
+
+  if (formula === 'IG5') {
+    return {
+      name: 'Listicle',
+      goal: 'Saves',
+      caption: `${numSlides - 2} ${topic.toLowerCase()} que a maioria ignora.\n\nE o mais subestimado é o número ${Math.ceil(mid/2)}.\n\nSalva esse carrossel para ter como referência.`,
+      slides: [
+        `${numSlides - 2} formas de ${topic} — a maioria não usa nem metade.`,
+        ...items.map((_, i) => `Número ${i+1}: [título claro]\n\nExemplo concreto: [descreva o que fazer na prática, não a teoria]`),
+        `Resumo em uma linha: [síntese de tudo]\n\nSalva esse post para usar quando precisar. 📌`
+      ]
+    };
+  } else if (formula === 'IG6') {
+    return {
+      name: 'Before/After',
+      goal: 'Saves & Follows',
+      caption: `${res}.\n\nVem aqui, te mostro o passo a passo desde o começo.`,
+      slides: [
+        `Resultado: ${res}.`,
+        `Onde eu estava antes:\n[descreva a situação inicial — sem romantizar]`,
+        ...Array.from({length: mid}, (_, i) => `Passo ${i+1}: [título do passo]\n\n[O que fazer de concreto — algo que a pessoa possa fazer amanhã]`),
+        `Me segue para o sistema completo de ${topic}. 👆\n\nE salva esse carrossel para acompanhar o passo a passo.`
+      ]
+    };
+  } else if (formula === 'IG7') {
+    return {
+      name: 'Myth-Buster',
+      goal: 'Shares',
+      caption: `${mid} mitos sobre ${topic.toLowerCase()} que estão te custando resultado.\n\nManda para quem ainda acredita no mito 1.`,
+      slides: [
+        `${mid} mitos sobre ${topic} que estão te custando ${res}.`,
+        ...Array.from({length: mid}, (_, i) => `Mito ${i+1}: "[crença comum que seu nicho tem]"\n\nVerdade: [o que realmente funciona — específico e defensável]`),
+        `A virada: quando você para de acreditar nesses mitos, o resultado vem mais rápido.\n\nManda esse carrossel para alguém que ainda acredita no mito 1. 👇`
+      ]
+    };
+  } else { // IG8
+    return {
+      name: 'Steal-This Framework',
+      goal: 'Saves',
+      caption: `O framework que uso para ${topic.toLowerCase()}.\n\nSalva esse carrossel — o último slide é o resumo completo em uma tela.`,
+      slides: [
+        `O framework [NOME DO SEU MÉTODO] que uso para ${res}.`,
+        ...Array.from({length: mid}, (_, i) => `Parte ${i+1}: [nome da parte]\n\n[Por que essa parte existe — o que acontece sem ela]\n\nComo aplicar: [instrução prática]`),
+        `[NOME DO MÉTODO] em uma tela:\n${Array.from({length: mid}, (_, i) => `→ Parte ${i+1}: [palavra-chave]`).join('\n')}\n\nSalva esse slide para usar como guia. 📌`
+      ]
+    };
+  }
+}
+
+// ── 3. Hook Extractor ──────────────────────────────
+function runHookExtractor() {
+  const caption = document.getElementById('he-caption').value.trim();
+  const type    = document.getElementById('he-type').value;
+  const out     = document.getElementById('he-output');
+
+  if (!caption) { alert('Cole a legenda para analisar.'); return; }
+
+  const analysis = analyzeHook(caption, type);
+  out.classList.remove('hidden');
+  out.innerHTML = `
+    <div class="output-card">
+      <div class="output-card-label">Análise do Hook</div>
+      <div class="hook-analysis">
+        <div class="hook-row">
+          <div class="hook-label">Fórmula</div>
+          <div class="hook-val"><span class="formula-badge">${analysis.formula}</span> ${analysis.name}</div>
+        </div>
+        <div class="hook-row">
+          <div class="hook-label">Objetivo</div>
+          <div class="hook-val">${analysis.goal}</div>
+        </div>
+        <div class="hook-row">
+          <div class="hook-label">Por que funciona</div>
+          <div class="hook-val">${analysis.why}</div>
+        </div>
+        <div class="hook-row">
+          <div class="hook-label">Hook (125 chars)</div>
+          <div class="hook-val">"${escapeHtml(analysis.hook)}"<br><small style="color:var(--fg3)">${analysis.hook.length} chars ${analysis.hook.length <= 125 ? '✅' : '⚠️ Acima de 125'}</small></div>
+        </div>
+        <div class="hook-row">
+          <div class="hook-label">Elementos fortes</div>
+          <div class="hook-val">${analysis.strengths.map(s => '✅ ' + s).join('<br>')}</div>
+        </div>
+        <div class="hook-row">
+          <div class="hook-label">O que replicar</div>
+          <div class="hook-val">${analysis.replicate}</div>
+        </div>
+      </div>
+    </div>`;
+  out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function analyzeHook(text, type) {
+  const firstLine = text.split('\n')[0].slice(0, 125);
+  const lower = text.toLowerCase();
+
+  let formula = 'IG3', name = 'Relatable Cold-Open', goal = 'Comentários';
+  const strengths = [];
+
+  // Detect formula
+  if (/\d+/.test(firstLine) && (lower.includes('passo') || lower.includes('tip') || lower.includes('forma') || lower.includes('jeito') || lower.includes('minuto') || lower.includes('hora') || lower.includes('%') || lower.includes('r\$'))) {
+    formula = 'IG1'; name = 'Number-First Result'; goal = 'Saves';
+  } else if (lower.includes('errado') || lower.includes('mito') || lower.includes('pare de') || lower.includes('para de') || lower.includes('ninguém fala') || lower.includes('mente') || lower.includes('mentira')) {
+    formula = 'IG2'; name = 'Contrarian Truth'; goal = 'Shares';
+  } else if (lower.includes('quando você') || lower.includes('sabe aquela') || lower.includes('aquela sensação') || lower.includes('aquele momento') || (firstLine.length < 80 && !firstLine.includes('?'))) {
+    formula = 'IG3'; name = 'Relatable Cold-Open'; goal = 'Comentários';
+  } else if (lower.includes(' atrás') || lower.includes('confesso') || lower.includes('errei') || lower.includes('fracassei') || lower.includes('journ') || lower.includes('jornada')) {
+    formula = 'IG4'; name = 'Mini-Story Confession'; goal = 'Comentários & Follows';
+  } else if (type === 'carousel' && /\d+/.test(firstLine)) {
+    formula = 'IG5'; name = 'Listicle Carousel'; goal = 'Saves';
+  } else if (type === 'carousel' && (lower.includes('antes') || lower.includes('resultado'))) {
+    formula = 'IG6'; name = 'Before/After'; goal = 'Saves & Follows';
+  } else if (type === 'carousel' && (lower.includes('mito') || lower.includes('mentira') || lower.includes('errado'))) {
+    formula = 'IG7'; name = 'Myth-Buster'; goal = 'Shares';
+  } else if (type === 'carousel' && (lower.includes('framework') || lower.includes('método') || lower.includes('sistema'))) {
+    formula = 'IG8'; name = 'Steal-This Framework'; goal = 'Saves';
+  } else if (type === 'reel' && (lower.includes('você está') || lower.includes('para de') || lower.includes('não faça'))) {
+    formula = 'IG9'; name = 'Pattern-Interrupt Reel'; goal = 'Shares';
+  } else if (type === 'reel' && lower.includes('como eu')) {
+    formula = 'IG10'; name = 'How-I Reel'; goal = 'Saves';
+  }
+
+  // Detect strengths
+  if (/\d+/.test(firstLine)) strengths.push('Número específico no hook — aumenta saves e shares');
+  if (firstLine.length <= 125) strengths.push('Hook dentro dos 125 caracteres — não corta no "mais"');
+  if (lower.includes('salva') || lower.includes('guarda')) strengths.push('CTA de save explícito');
+  if (lower.includes('manda') || lower.includes('compartilha') || lower.includes('envia')) strengths.push('CTA de share/send');
+  if (lower.includes('comenta') || lower.includes('me conta')) strengths.push('CTA de comentário com pergunta real');
+  if (strengths.length === 0) strengths.push('Identifique um dado ou número para tornar o hook mais forte');
+
+  const whyMap = {
+    IG1: 'O número no início do hook promete resultado repetível — o formato mais salvo do Instagram.',
+    IG2: 'Opinião contrária gera o impulso de encaminhar para quem precisa ouvir isso.',
+    IG3: 'Reconhecimento imediato faz o leitor se sentir visto, disparando comentários.',
+    IG4: 'Transparência sobre falha cria conexão e converte visitantes em seguidores.',
+    IG5: 'Lista numerada com gap aberto ("o número X surpreende") força o swipe completo.',
+    IG6: 'Resultado no slide 1 + caminho para chegar lá = save e follow natural.',
+    IG7: 'Munição para corrigir alguém que você conhece — sends por natureza.',
+    IG8: 'Framework nomeado vira referência — pesssoas salvam para usar depois.',
+    IG9: 'Interrupção de padrão segura o scroll nos primeiros 3 segundos.',
+    IG10: '"Como eu" com número âncora = prova + método = save forte.',
+  };
+
+  return {
+    formula, name, goal,
+    hook: firstLine,
+    why: whyMap[formula] || 'Hook direto que entrega valor antes do fold.',
+    strengths,
+    replicate: `Use a fórmula ${formula} para posts similares no mesmo nicho. ${formula === 'IG1' || formula === 'IG5' || formula === 'IG8' ? 'Mantenha o número específico no hook.' : formula === 'IG2' || formula === 'IG7' ? 'A afirmação contrária tem que ser defensável nos comentários.' : 'A especificidade é o diferencial — evite versões genéricas.'}`
+  };
+}
+
+// ── 4. Hashtag Strategist ─────────────────────────
+function runHashtagStrategist() {
+  const topic = document.getElementById('hs-topic').value.trim();
+  const size  = document.getElementById('hs-size').value;
+  const niche = document.getElementById('hs-niche').value.trim().toLowerCase();
+  const out   = document.getElementById('hs-output');
+
+  if (!topic) { alert('Digite o assunto do post.'); return; }
+
+  const set = buildHashtagSet(topic, niche, size);
+  out.classList.remove('hidden');
+  out.innerHTML = `
+    <div class="output-card">
+      <div class="output-card-label">Conjunto de Hashtags (${set.total} tags)</div>
+      <div class="hashtag-set">
+        ${set.tiers.map(t => `
+          <div class="hashtag-tier-card ${t.type}">
+            <div class="hashtag-tier-header">
+              <div class="hashtag-tier-name">${t.label} — ${t.tags.length} tags</div>
+              <div class="hashtag-tier-range">${t.range}</div>
+            </div>
+            <div class="hashtag-tags">${t.tags.map(h => `<span class="hashtag-tag">${h}</span>`).join('')}</div>
+            <div style="font-size:11px;color:var(--fg3);margin-top:6px">${t.why}</div>
+          </div>`).join('')}
+      </div>
+      <div style="margin-top:12px;padding:10px 12px;background:var(--surface2);border-radius:8px;font-size:12px;color:var(--fg2)">
+        📋 <strong>Para copiar:</strong> ${set.tiers.flatMap(t => t.tags).join(' ')}<br>
+        <small>Coloque no final da legenda ou no primeiro comentário. Varie o set por tópico.</small>
+      </div>
+    </div>`;
+  out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function buildHashtagSet(topic, niche, size) {
+  const t = (topic + ' ' + niche).toLowerCase();
+  let tiers;
+
+  // Finance / Credit
+  if (t.includes('consign') || t.includes('crédito') || t.includes('credito') || t.includes('financ') || t.includes('emprestimo') || t.includes('dinheiro') || t.includes('renda')) {
+    tiers = [
+      { type: 'niche', label: '🟣 Nicho', range: '<50K posts', tags: size === 'small' ? ['#consignadoparaservidor', '#creditoconsignadoINSS'] : ['#creditoconsignadobr', '#emprestimoconsignadooficial'], why: 'Conta pequena rankeia aqui por horas — máxima visibilidade no nicho.' },
+      { type: 'mid', label: '🔵 Mid', range: '50K–500K posts', tags: ['#creditopessoal', '#financaspessoais'], why: 'Audiência ampla, competição possível para contas em crescimento.' },
+      { type: 'broad', label: '🟠 Broad', range: '500K+ posts', tags: ['#financas'], why: 'Toque de categoria — fica no topo por minutos mas reforça o tema.' },
+    ];
+  } else if (t.includes('fit') || t.includes('treino') || t.includes('gym') || t.includes('saúde') || t.includes('academia') || t.includes('emagrec')) {
+    tiers = [
+      { type: 'niche', label: '🟣 Nicho', range: '<50K posts', tags: size === 'small' ? ['#treinoemcasa2026', '#rotinafitnessbr'] : ['#progressonagym', '#treinoatual'], why: 'Nicho específico onde você pode rankear no topo por horas.' },
+      { type: 'mid', label: '🔵 Mid', range: '50K–500K posts', tags: ['#musculacao', '#emagrecimentosaudavel'], why: 'Comunidade ativa e competição ainda alcançável.' },
+      { type: 'broad', label: '🟠 Broad', range: '500K+ posts', tags: ['#fitness'], why: 'Label de categoria — toca a audiência mas não é onde você rankeia.' },
+    ];
+  } else if (t.includes('moda') || t.includes('roupa') || t.includes('estilo') || t.includes('look') || t.includes('ootd')) {
+    tiers = [
+      { type: 'niche', label: '🟣 Nicho', range: '<50K posts', tags: size === 'small' ? ['#estilopessoalbr', '#lookdatardetbr'] : ['#modafemininabr', '#fashionbrasil'], why: 'Específico o suficiente para rankear e aparecer para quem realmente importa.' },
+      { type: 'mid', label: '🔵 Mid', range: '50K–500K posts', tags: ['#lookdodia', '#ootdbrasil'], why: 'Comunidade de moda nacional com engajamento real.' },
+      { type: 'broad', label: '🟠 Broad', range: '500K+ posts', tags: ['#moda'], why: 'Toque de categoria.' },
+    ];
+  } else if (t.includes('fotograf') || t.includes('photo') || t.includes('ensaio') || t.includes('retrato')) {
+    tiers = [
+      { type: 'niche', label: '🟣 Nicho', range: '<50K posts', tags: size === 'small' ? ['#fotografiabrasileira', '#ensaiofotobresileiro'] : ['#fotografoprofissionalbr', '#retratofotografico'], why: 'Fotógrafos brasileiros — audiência certa, competição baixa.' },
+      { type: 'mid', label: '🔵 Mid', range: '50K–500K posts', tags: ['#fotografiabr', '#fotografo'], why: 'Mid sólido com comunidade engajada.' },
+      { type: 'broad', label: '🟠 Broad', range: '500K+ posts', tags: ['#fotografia'], why: 'Categoria.' },
+    ];
+  } else if (t.includes('marketing') || t.includes('negocio') || t.includes('negócio') || t.includes('empreend') || t.includes('venda') || t.includes('digital')) {
+    tiers = [
+      { type: 'niche', label: '🟣 Nicho', range: '<50K posts', tags: size === 'small' ? ['#marketingdigitalbr2026', '#estrategiademidia'] : ['#contentmarketingbr', '#socialmediabr'], why: 'Nicho de marketing digital brasileiro — competição gerenciável.' },
+      { type: 'mid', label: '🔵 Mid', range: '50K–500K posts', tags: ['#marketingdigital', '#empreendedorismo'], why: 'Audiência ampla de empreendedores.' },
+      { type: 'broad', label: '🟠 Broad', range: '500K+ posts', tags: ['#marketing'], why: 'Categoria geral.' },
+    ];
+  } else {
+    // Generic fallback from topic words
+    const words = topic.toLowerCase().replace(/[^a-záàãâéêíóôõúüç\s]/g, '').split(' ').filter(w => w.length > 3);
+    const base = words[0] || 'conteudo';
+    const base2 = words[1] || 'dicas';
+    tiers = [
+      { type: 'niche', label: '🟣 Nicho', range: '<50K posts', tags: [`#${base}br`, `#${base}${base2}`].map(h => h.replace(/\s/g, '')), why: 'Construído a partir do tópico — verifique a contagem no app antes de publicar.' },
+      { type: 'mid', label: '🔵 Mid', range: '50K–500K posts', tags: [`#${base}brasil`, '#conteudodigital'], why: 'Mid estimado — ajuste conforme a realidade do seu nicho.' },
+      { type: 'broad', label: '🟠 Broad', range: '500K+ posts', tags: ['#brasil'], why: 'Label de categoria ampla.' },
+    ];
+  }
+
+  const total = tiers.reduce((acc, t) => acc + t.tags.length, 0);
+  return { tiers, total };
+}
+
+// ── 5. Humanizer ──────────────────────────────────
+function runHumanizer() {
+  const text = document.getElementById('hum-text').value.trim();
+  const mode = document.getElementById('hum-mode').value;
+  const out  = document.getElementById('hum-output');
+
+  if (!text) { alert('Cole o texto para humanizar.'); return; }
+
+  const result = mode === 'audit' ? auditAITells(text) : rewriteHumanized(text);
+  out.classList.remove('hidden');
+  out.innerHTML = result;
+  out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+const AI_VOCAB = ['significativo','crucial','notavelmente','abrangente','insights','robusto','alavancar','fomentar','paisagem','nuançado','streamline','elevar','empoderar','mergulhe','fundamentalmente','essencialmente','em última análise','leverage','fundamentally','essentially','ultimately','significant','crucial','notably','comprehensive','robust','foster','nuanced','elevate','empower','dive in','streamline','landscape'];
+const REVEAL_BRIDGES = ['o resultado?','here\'s the thing','let\'s talk about','vamos falar sobre','a verdade é que','aqui está a coisa','stop x, start y','pare de x, comece'];
+const EM_DASH_RE = /—/g;
+
+function auditAITells(text) {
+  const words = text.split(/\s+/).length;
+  const dashCount = (text.match(EM_DASH_RE) || []).length;
+  const maxDashes = Math.max(1, Math.round(words / 100));
+
+  const foundAI = AI_VOCAB.filter(w => text.toLowerCase().includes(w));
+  const foundBridges = REVEAL_BRIDGES.filter(b => text.toLowerCase().includes(b));
+  const staccato = (text.match(/\b\w+\.\s+\w+\.\s+\w+\./g) || []).length;
+  const triads = (text.match(/[^.]*,\s+[^,]+,\s+e\s+[^,]+\./g) || []).length;
+
+  const issues = [];
+  if (foundAI.length > 0) issues.push({ icon: '🔴', title: 'Vocabulário de IA detectado', note: `Palavras: ${foundAI.join(', ')}`, fix: 'Substitua por equivalentes diretos. "Insights" → "o que aprendi". "Landscape" → "cenário" ou remova. "Robust" → "sólido" ou "concreto".' });
+  if (dashCount > maxDashes) issues.push({ icon: '🔴', title: `Traços em (—) em excesso: ${dashCount} encontrado(s)`, note: `Limite ideal: ~${maxDashes} por ${words} palavras.`, fix: 'Substitua traços extras por vírgulas, dois-pontos ou quebras de linha. Um único traço é humano; três seguidos é sinal de IA.' });
+  if (foundBridges.length > 0) issues.push({ icon: '🟡', title: 'Pontes de revelação', note: `Encontradas: "${foundBridges.join('", "')}"`, fix: 'Remova a ponte e vá direto para o ponto. "O resultado? Economizei 3 horas." → "Economizei 3 horas."' });
+  if (staccato > 1) issues.push({ icon: '🟡', title: 'Stack estacato detectado', note: '"Curto. Pontual. Pronto." — padrão fortemente associado a texto de IA.', fix: 'Escreva a ideia em uma frase completa em vez de fragmentos dramáticos.' });
+  if (triads > 2) issues.push({ icon: '🟡', title: 'Tríades em excesso', note: 'Muitas listas de 3 no mesmo texto parecem geradas.', fix: 'Varie: use 2 itens em alguns lugares, 4 em outros. Ou escreva em prosa.' });
+
+  if (issues.length === 0) {
+    return `<div class="output-card"><div class="output-card-label ai-clean">✅ Texto aprovado</div><div class="output-card-body">Nenhum marcador de IA significativo encontrado. O texto parece humano o suficiente para publicar.</div></div>`;
+  }
+
+  const score = issues.length === 1 ? 'Leve' : issues.length === 2 ? 'Moderado' : 'Alto';
+  return `
+    <div class="output-card">
+      <div class="output-card-label">🤖 Risco de AI: <span class="${issues.length >= 3 ? 'ai-tell' : 'ai-clean'}">${score} (${issues.length} problema${issues.length > 1 ? 's' : ''})</span></div>
+      <div class="audit-item" style="padding-bottom:8px;margin-bottom:4px;font-size:12px;color:var(--fg2)">
+        ${words} palavras · ${dashCount} traço${dashCount !== 1 ? 's' : ''} em · limite ideal: ${maxDashes}
+      </div>
+      ${issues.map(issue => `
+        <div class="audit-item">
+          <div class="audit-icon">${issue.icon}</div>
+          <div class="audit-body">
+            <div class="audit-title">${issue.title}</div>
+            <div class="audit-note">${issue.note}</div>
+            <div class="audit-fix">💡 ${issue.fix}</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function rewriteHumanized(text) {
+  let rewritten = text;
+  // Replace AI vocab
+  const replacements = {
+    'significativo': 'importante', 'crucial': 'essencial', 'notavelmente': '',
+    'abrangente': 'completo', 'robusto': 'sólido', 'alavancar': 'usar',
+    'fomentar': 'criar', 'nuançado': 'específico', 'elevar': 'melhorar',
+    'empoderar': 'dar autonomia a', 'fundamentalmente': '', 'essencialmente': '',
+    'em última análise': 'no fim', 'leverage': 'usar', 'landscape': 'cenário',
+    'fundamentally': '', 'essentially': '', 'ultimately': 'no fim',
+    'significant': 'importante', 'crucial': 'importante', 'notably': '',
+    'comprehensive': 'completo', 'robust': 'sólido',
+  };
+
+  Object.entries(replacements).forEach(([from, to]) => {
+    const re = new RegExp('\\b' + from + '\\b', 'gi');
+    rewritten = to ? rewritten.replace(re, to) : rewritten.replace(re, '').replace(/\s{2,}/g, ' ');
+  });
+
+  // Remove reveal bridges
+  rewritten = rewritten.replace(/[Oo] resultado\?/g, '').replace(/[Aa]qui está a coisa:/g, '').replace(/[Vv]amos falar sobre/g, 'Sobre');
+
+  const id = 'hum-rw-' + Date.now();
+  return `
+    <div class="output-card">
+      <div class="output-card-label">✅ Texto Reescrito</div>
+      <button class="output-card-copy" onclick="copyOutputCard(this, document.getElementById('${id}').textContent)">📋 Copiar</button>
+      <div class="output-card-body" id="${id}">${escapeHtml(rewritten.trim())}</div>
+    </div>
+    <div class="output-card" style="border-left:3px solid var(--yellow)">
+      <div class="output-card-label">⚠️ Revisão manual recomendada</div>
+      <div class="output-card-body" style="font-size:13px">A reescrita automática substitui padrões comuns. Leia o resultado em voz alta — se soar estranho, ajuste manualmente. Adicione um dado específico ou um exemplo concreto para deixar mais humano.</div>
+    </div>`;
+}
+
+// ── 6. Content Planner ────────────────────────────
+function runContentPlanner() {
+  const niche = document.getElementById('pl-niche').value.trim();
+  const freq  = parseInt(document.getElementById('pl-freq').value);
+  const goal  = document.getElementById('pl-goal').value;
+  const out   = document.getElementById('pl-output');
+
+  if (!niche) { alert('Digite o nicho da conta.'); return; }
+
+  const plan = buildWeekPlan(niche, freq, goal);
+  out.classList.remove('hidden');
+  out.innerHTML = `
+    <div class="output-card">
+      <div class="output-card-label">📅 Plano Semanal — ${niche} · ${freq}x/semana</div>
+      <div class="week-grid">
+        ${plan.map(day => `
+          <div class="week-day">
+            <div class="week-day-name">${day.day}</div>
+            <div class="week-day-content">
+              <div class="week-day-format">${day.format}</div>
+              <div class="week-day-idea">${day.idea}</div>
+              <div class="week-day-goal">🎯 ${day.signal} · ⏰ ${day.time}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <div style="margin-top:14px;padding:10px 12px;background:var(--surface2);border-radius:8px;font-size:12px;color:var(--fg2)">
+        <strong>Regra dos ${freq}x:</strong> alterne formatos a cada post. Reel → Carrossel → Foto → Reel. Responda todos os comentários na primeira hora depois de publicar — isso define o alcance.
+      </div>
+    </div>`;
+  out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function buildWeekPlan(niche, freq, goal) {
+  const days7 = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  const signalMap = { followers: 'Follows', leads: 'Sends', authority: 'Saves', sales: 'Sends' };
+  const signal = signalMap[goal] || 'Saves';
+
+  const templates = [
+    { format: '🎬 Reel', idea: `Como eu [resultado específico] com ${niche} — roteiro How-I (IG10)`, signal: 'Saves & Follows', time: '18h–20h' },
+    { format: '🖼️ Carrossel', idea: `${niche === niche ? '5' : '7'} erros mais comuns em ${niche} — myth-buster (IG7)`, signal: 'Shares', time: '19h' },
+    { format: '📷 Foto', idea: `Nos bastidores: [processo do dia relacionado a ${niche}] — legenda IG3 relatable`, signal: 'Comentários', time: '18h' },
+    { format: '🖼️ Carrossel', idea: `Framework: o método que uso em ${niche} para [resultado] — steal-this (IG8)`, signal: 'Saves', time: '18h30' },
+    { format: '🎬 Reel', idea: `[Opinião contrária sobre ${niche}] — pattern interrupt (IG9)`, signal: 'Shares', time: '20h' },
+    { format: '📷 Foto', idea: `[Resultado com número] — caption IG1 com dado específico`, signal: 'Saves', time: '11h' },
+    { format: '🖼️ Carrossel', idea: `Before/After: [transformação relacionada a ${niche}] — IG6`, signal: 'Saves & Follows', time: '18h' },
+  ];
+
+  // Select days based on frequency
+  const dayIndexes = freq === 3 ? [0,2,4] : freq === 5 ? [0,1,2,3,4] : [0,1,2,3,4,5,6];
+  return dayIndexes.map((di, i) => ({
+    day: days7[di],
+    ...templates[i % templates.length]
+  }));
+}
+
+// ── 7. Repurposer ─────────────────────────────────
+function runRepurposer() {
+  const source  = document.getElementById('rp-source').value;
+  const content = document.getElementById('rp-content').value.trim();
+  const target  = document.getElementById('rp-target').value;
+  const out     = document.getElementById('rp-output');
+
+  if (!content) { alert('Cole o conteúdo original.'); return; }
+
+  const result = repurposeContent(source, content, target);
+  out.classList.remove('hidden');
+  out.innerHTML = result;
+  out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function repurposeContent(source, content, target) {
+  const first = content.split('\n')[0].slice(0, 200);
+  const words = content.trim().split(/\s+/);
+  const summary = words.slice(0, 40).join(' ') + (words.length > 40 ? '…' : '');
+
+  const sourceLabels = { linkedin: 'LinkedIn', blog: 'Blog', youtube: 'YouTube', twitter: 'X/Twitter', podcast: 'Podcast' };
+  const label = sourceLabels[source] || source;
+
+  let output = '';
+  const id = 'rp-out-' + Date.now();
+
+  if (target === 'caption') {
+    const hook = `${source === 'linkedin' ? 'Vi esse insight no meu feed do LinkedIn' : source === 'blog' ? 'Escrevi sobre isso no blog' : 'Falei sobre isso'} e precisava trazer aqui também.`;
+    const adapted = `${summary}\n\nO ponto que mais importa: [extraia a ideia central do conteúdo acima]\n\nSalva se isso fez sentido. E me conta nos comentários: você já aplicou algo parecido? 👇`;
+    output = `<div class="output-card">
+      <div class="output-card-label">✅ Post/Foto — adaptado de ${label}</div>
+      <button class="output-card-copy" onclick="copyOutputCard(this, document.getElementById('${id}').textContent)">📋 Copiar</button>
+      <div class="output-card-body" id="${id}">${escapeHtml(adapted)}</div>
+    </div>
+    <div class="output-card" style="border-left:3px solid var(--blue)">
+      <div class="output-card-label">💡 Dica de adaptação</div>
+      <div class="output-card-body" style="font-size:13px">No Instagram a linguagem é mais direta e visual. Remova jargão técnico do ${label}. Adicione um número específico no hook. Garanta que os primeiros 125 caracteres façam sentido sozinhos.</div>
+    </div>`;
+  } else if (target === 'carousel') {
+    const slideCount = Math.min(8, Math.max(3, Math.ceil(words.length / 50)));
+    output = `<div class="output-card">
+      <div class="output-card-label">✅ Carrossel ${slideCount} slides — adaptado de ${label}</div>
+      <div class="output-card-body" style="font-size:13px;margin-bottom:10px">Baseado no conteúdo original com ${words.length} palavras → ${slideCount} slides:</div>
+      ${[
+        `Slide 1 (Hook): [A promessa principal do seu conteúdo em uma frase — o que o leitor vai aprender]\n\n"${first.slice(0, 80)}…"`,
+        `Slide 2: [Primeiro ponto principal do conteúdo]`,
+        `Slide 3: [Segundo ponto — com exemplo concreto]`,
+        slideCount > 4 ? `Slide 4: [Terceiro ponto]` : null,
+        slideCount > 5 ? `Slide 5: [Quarto ponto ou dado de suporte]` : null,
+        `Slide ${slideCount}: Resumo em uma linha + "Salva esse carrossel para usar como referência. 📌"`,
+      ].filter(Boolean).map((s, i) => `<div class="slide-card"><div class="slide-num">Slide ${i + 1}</div><div class="slide-text">${escapeHtml(s)}</div></div>`).join('')}
+    </div>`;
+  } else {
+    // Reel script
+    const id2 = 'rp-reel-' + Date.now();
+    const script = `PRIMEIRA TELA (texto na tela): "${first.slice(0, 60)}"
+
+PRIMEIRA FALA (sem introdução): [vá direto ao ponto — o que você aprendeu com isso]
+
+CORPO (cortes rápidos, cada ponto com texto na tela):
+→ Ponto 1: [ideia principal do ${label}]
+→ Ponto 2: [segundo aprendizado]
+→ Ponto 3: [terceiro ponto mais prático]
+
+FECHAMENTO: "Salva esse Reel para usar depois."
+
+LEGENDA (suporte ao vídeo, não repete o roteiro):
+${summary.slice(0, 100)} — o vídeo mostra como.`;
+    output = `<div class="output-card">
+      <div class="output-card-label">✅ Roteiro de Reel — adaptado de ${label}</div>
+      <button class="output-card-copy" onclick="copyOutputCard(this, document.getElementById('${id2}').textContent)">📋 Copiar</button>
+      <div class="output-card-body" id="${id2}">${escapeHtml(script)}</div>
+    </div>`;
+  }
+
+  return output;
+}
+
+// ── 8. Profile Optimizer ──────────────────────────
+function runProfileOptimizer() {
+  const goal    = document.getElementById('po-goal').value;
+  const bio     = document.getElementById('po-bio').value.trim();
+  const name    = document.getElementById('po-name').value.trim();
+  const keyword = document.getElementById('po-keyword').value.trim();
+  const out     = document.getElementById('po-output');
+
+  // Also read from profile bar if available
+  const profileName  = document.getElementById('profile-name')?.textContent || name || 'Seu Nome';
+  const profileHandle= document.getElementById('profile-handle')?.textContent?.replace('@','') || 'handle';
+  const profileBio   = bio || '';
+  const followersEl  = document.getElementById('stat-followers')?.textContent || '0';
+
+  const audit = buildProfileAudit(goal, profileBio || bio, name || profileName, keyword, profileHandle, followersEl);
+  out.classList.remove('hidden');
+
+  const passed = audit.filter(a => a.status === 'pass').length;
+  out.innerHTML = `
+    <div class="output-card">
+      <div class="output-card-label">🔍 Auditoria do Perfil — ${passed}/9 aprovados</div>
+      <div style="font-size:13px;color:var(--fg2);margin-bottom:12px">Objetivo: <strong>${{followers:'Crescer seguidores',clients:'Captar clientes',authority:'Construir autoridade',sales:'Vender produto'}[goal]}</strong></div>
+      <div class="profile-audit">
+        ${audit.map(item => `
+          <div class="pa-item">
+            <div class="pa-status">${item.status === 'pass' ? '✅' : item.status === 'needs-work' ? '⚠️' : '❌'}</div>
+            <div class="pa-body">
+              <div class="pa-name">${item.name}</div>
+              <div class="pa-issue">${item.issue}</div>
+              ${item.rewrite ? `<div class="pa-rewrite">💡 ${escapeHtml(item.rewrite)}</div>` : ''}
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="output-card" style="border-left:3px solid var(--accent)">
+      <div class="output-card-label">🏆 Teste do cabeçalho</div>
+      <div class="output-card-body" style="font-size:13px">Um visitante vendo só a foto + NOME + bio + link + primeira linha do grid saberia imediatamente <strong>para quem é essa conta</strong> e teria motivo para seguir?<br><br>Se a resposta for não, a bio e o campo NOME são as prioridades número 1 e 2.</div>
+    </div>`;
+  out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function buildProfileAudit(goal, bio, name, keyword, handle, followers) {
+  const kw = keyword || 'palavra-chave do nicho';
+  const bioLen = bio.length;
+  const hasNumber = /\d+/.test(bio);
+  const hasEmoji = /\p{Emoji}/u.test(bio);
+  const hasCTA = /link|acesse|saiba|clique|direct|whats|agenda|baixe|gratuito|grátis/i.test(bio);
+  const hasValue = bio.length > 30;
+
+  const goalCTA = { followers: 'Segue para [o que você posta]', clients: 'Agende aqui → [link]', authority: 'Artigos e métodos → [link]', sales: '[Produto] disponível → [link]' }[goal] || 'Link na bio';
+  const goalLink = { followers: 'Linktree com seu melhor conteúdo', clients: 'Página de agendamento ou contato', authority: 'Newsletter ou blog', sales: 'Página de produto ou checkout' }[goal] || 'Link relevante';
+
+  return [
+    {
+      name: '📸 Foto de perfil', status: 'needs-work',
+      issue: 'Não consigo verificar a foto aqui, mas: rosto claro, preenche o círculo, fundo limpo, contraste alto. Lembra que ela renderiza em 42x42px no feed.',
+      rewrite: 'Troque por uma foto com rosto centralizado, fundo neutro e iluminação frontal. Evite logo como foto principal se você é um criador/profissional.',
+    },
+    {
+      name: '✏️ Campo NOME (indexado pelo algoritmo)',
+      status: (name && keyword && !name.toLowerCase().includes(keyword.toLowerCase().split(' ')[0])) ? 'needs-work' : name && keyword ? 'pass' : 'fail',
+      issue: name ? `Atual: "${name}". O campo NOME é o que o Instagram indexa nas buscas — não o @handle.` : 'Campo NOME não informado.',
+      rewrite: `${name.split(' ')[0] || 'Seu Nome'} | ${kw} — dentro de 30 caracteres. Ex: "Maria | Crédito Consignado" ou "João | Marketing Digital"`,
+    },
+    {
+      name: `@ Handle — @${handle}`,
+      status: handle.length <= 20 && !/\d{4,}/.test(handle) && !/__/.test(handle) ? 'pass' : 'needs-work',
+      issue: handle.length > 20 ? 'Handle longo demais — dificulta memorização.' : /\d{4,}/.test(handle) ? 'Muitos números no handle reduzem credibilidade.' : /__/.test(handle) ? 'Underscores duplos dificultam digitação.' : 'Handle dentro dos padrões.',
+      rewrite: handle.length > 20 || /\d{4,}/.test(handle) ? `Considere encurtar para algo como @${handle.replace(/\d{2,}/g,'').replace(/__/g,'_').slice(0,20)}` : null,
+    },
+    {
+      name: `📝 Bio (${bioLen}/150 caracteres)`,
+      status: bioLen >= 80 && bioLen <= 150 && hasValue ? 'pass' : bioLen > 0 ? 'needs-work' : 'fail',
+      issue: bioLen === 0 ? 'Bio vazia.' : bioLen < 80 ? `Bio muito curta (${bioLen} chars). Você tem ${150 - bioLen} caracteres para usar.` : bioLen > 150 ? `Bio com ${bioLen} chars — vai cortar no Instagram (limite: 150).` : !hasCTA ? 'Falta CTA claro.' : !hasValue ? 'Bio sem proposta de valor clara.' : 'Bio dentro dos parâmetros.',
+      rewrite: bio ? `Versão otimizada para ${goal === 'followers' ? 'crescimento' : goal === 'clients' ? 'captar clientes' : 'autoridade'}:\n"${kw} para [seu público] | [resultado ou prova concreta] | ${goalCTA}"` : `"${kw} para [seu público-alvo] | [prova ou resultado com número] | ${goalCTA}"`,
+    },
+    {
+      name: '🔗 Link na bio', status: 'needs-work',
+      issue: 'Não consigo verificar o link daqui. O link deve ir direto para o objetivo da conta.',
+      rewrite: `Para ${goal}: ${goalLink}. Se precisar de mais de um link, use um link-hub (Linktree, Beacons etc.) — o primeiro link é o que recebe os cliques.`,
+    },
+    {
+      name: '🏷️ Categoria (conta business/creator)',
+      status: 'needs-work',
+      issue: 'Conta business e creator desbloqueiam a categoria, o painel profissional e o label sob o NOME.',
+      rewrite: 'Configurações → Conta → Mudar para Conta Profissional → selecione Creator ou Business → escolha a categoria do seu nicho.',
+    },
+    {
+      name: '⭐ Destaques (Stories)',
+      status: 'needs-work',
+      issue: 'Destaques são a primeira coisa que um visitante vê após a bio. 4–6 categorias com capas padronizadas.',
+      rewrite: 'Ordem ideal: "Sobre mim" → "Prova/Resultados" → "Oferta/Serviços" → "Dicas" → "FAQ". Nomes curtos que não cortam (máx. ~8 letras). Capas em uma paleta consistente.',
+    },
+    {
+      name: '🔲 Primeiros 9 posts (grid)',
+      status: 'needs-work',
+      issue: 'O grid é avaliado como um conjunto, não post a post. Consistência visual converte visitantes em seguidores.',
+      rewrite: 'Mix ideal: ~40% Reels, ~40% carrosséis, ~20% fotos. Paleta de cores consistente. Os 3 posts mais recentes devem representar o que a conta é sobre.',
+    },
+    {
+      name: '📌 Posts fixados (até 3)',
+      status: 'needs-work',
+      issue: 'Posts fixados ficam no topo do grid e são os primeiros que um visitante vê.',
+      rewrite: `Fixe: 1) Seu melhor post educativo (saves) 2) Prova de resultado ou depoimento 3) Post de apresentação ("quem eu sou e o que você ganha me seguindo"). ${goal === 'clients' ? 'Inclua um post sobre seu serviço/oferta.' : ''}`,
+    },
+  ];
 }
 
 // ══════════════════════════════════════════════════
