@@ -607,7 +607,7 @@ img { max-width: 100%; }
 // CONFIGURAÇÃO — substitua estes valores
 // ══════════════════════════════════════════════════
 const CONFIG = {
-  META_APP_ID: '2142988793240437',
+  META_APP_ID: '1123465306700530',
   N8N_WEBHOOK_BASE: 'https://rarelookingorca-n8n.cloudfy.live/webhook',
   SUPABASE_URL: 'https://sfjxgbkvnjfvzbguwwhf.supabase.co',
   SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmanhnYmt2bmpmdnpiZ3V3d2hmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5NjM3MzAsImV4cCI6MjA4NDUzOTczMH0.JtlgLxwYEkvIZEqGqDUOi3vng2HAf9M34XayW4w6orA',
@@ -623,11 +623,11 @@ function startLogin() {
   const params = new URLSearchParams({
     client_id: CONFIG.META_APP_ID,
     redirect_uri: CONFIG.REDIRECT_URI,
-    scope: 'instagram_business_basic,instagram_business_manage_insights,instagram_business_content_publish',
+    scope: 'instagram_business_basic,instagram_manage_insights',
     response_type: 'code',
     state,
   });
-  window.location.href = `https://www.facebook.com/dialog/oauth?${params}`;
+  window.location.href = `https://www.instagram.com/oauth/authorize?${params}`;
 }
 
 function disconnect() {
