@@ -681,8 +681,9 @@ function renderDashboard(data) {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('dashboard').style.display = 'block';
 
-  // Profile bar
-  const profile = data.profile || {};
+  // Profile bar — Supabase retorna array ou objeto direto
+  const raw = Array.isArray(data) ? data[0] : data;
+  const profile = raw.profile || raw;
   document.getElementById('profile-name').textContent = profile.name || profile.username || '—';
   document.getElementById('profile-handle').textContent = '@' + (profile.username || '—');
   document.getElementById('stat-followers').textContent = fmtNum(profile.followers_count);
@@ -697,22 +698,23 @@ function renderDashboard(data) {
     avatarEl.textContent = (profile.name || profile.username || '?')[0].toUpperCase();
   }
 
-  // Metrics
-  const insights = data.insights || {};
-  document.getElementById('m-engagement').textContent = insights.engagement_rate ? insights.engagement_rate.toFixed(2) + '%' : '—';
-  document.getElementById('m-reach').textContent = fmtNum(insights.avg_reach);
-  document.getElementById('m-impressions').textContent = fmtNum(insights.total_impressions);
+  // Metrics — dados podem estar em raw diretamente (Supabase) ou em data.insights
+  const insights = raw.insights || raw;
+  const engRate = raw.engagement_rate || insights.engagement_rate || 0;
+  document.getElementById('m-engagement').textContent = engRate ? parseFloat(engRate).toFixed(2) + '%' : '—';
+  document.getElementById('m-reach').textContent = fmtNum(raw.avg_reach || insights.avg_reach);
+  document.getElementById('m-impressions').textContent = fmtNum(raw.total_impressions || insights.total_impressions);
 
   // Profile score
-  renderProfileScore(data.profile_score || {});
+  renderProfileScore(raw.profile_score || {});
   // Algorithm signals
-  renderAlgoSignals(data.algo || {});
+  renderAlgoSignals(raw.algo || {});
   // Hashtags
-  renderHashtags(data.hashtags || {});
+  renderHashtags(raw.hashtags || {});
   // Timing
-  renderTiming(data.timing || {});
+  renderTiming(raw.timing || {});
   // Recs
-  renderRecs(data.recommendations || []);
+  renderRecs(raw.recommendations || []);
 }
 
 // ── Profile Score (9 critérios) ──────────────────
