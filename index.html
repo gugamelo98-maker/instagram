@@ -611,7 +611,7 @@ const CONFIG = {
   N8N_WEBHOOK_BASE: 'https://rarelookingorca-n8n.cloudfy.live/webhook',
   SUPABASE_URL: 'https://sfjxgbkvnjfvzbguwwhf.supabase.co',
   SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmanhnYmt2bmpmdnpiZ3V3d2hmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5NjM3MzAsImV4cCI6MjA4NDUzOTczMH0.JtlgLxwYEkvIZEqGqDUOi3vng2HAf9M34XayW4w6orA',
-  REDIRECT_URI: window.location.origin + '/callback.html',
+  REDIRECT_URI: window.location.origin + '/',
 };
 
 // ══════════════════════════════════════════════════
@@ -874,28 +874,60 @@ function renderRecs(recs) {
 // ══════════════════════════════════════════════════
 // Init
 // ══════════════════════════════════════════════════
-async function init() {
-  // Check if returning from OAuth callback
-  const params = new URLSearchParams(location.search);
-  const sessionCode = params.get('session');
+async function handleOAuthCallback(code) {
+  setLoading(true, 'Conectando sua conta...');
+  try {
+    const response = await fetch(`${CONFIG.N8N_WEBHOOK_BASE}/instagram-auth`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, redirect_uri: CONFIG.REDIRECT_URI }),
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    if (!data.user_id) throw new Error('Resposta inválida do servidor.');
+    try {
+      localStorage.setItem('ig_session', JSON.stringify({
+        user_id: data.user_id,
+        username: data.username,
+        connected_at: Date.now(),
+      }));
+    } catch(e) {}
+    // Remove code from URL
+    window.history.replaceState({}, '', '/');
+    return data.user_id;
+  } catch(e) {
+    setLoading(false);
+    showError('Erro ao conectar: ' + e.message);
+    return null;
+  }
+}
 
-  // Check stored session
+async function init() {
+  const params = new URLSearchParams(location.search);
+  const code = params.get('code');
+  const sessionUserId = params.get('session');
+
   let session = null;
   try { session = JSON.parse(localStorage.getItem('ig_session')); } catch(e) {}
 
-  if (sessionCode || session?.user_id) {
-    if (sessionCode) {
-      try { localStorage.setItem('ig_session', JSON.stringify({ user_id: sessionCode })); } catch(e){}
-    }
-    const userId = sessionCode || session.user_id;
+  let userId = null;
 
-    // Show header actions
+  if (code) {
+    // Returning from Instagram OAuth
+    userId = await handleOAuthCallback(code);
+  } else if (sessionUserId) {
+    userId = sessionUserId;
+    try { localStorage.setItem('ig_session', JSON.stringify({ user_id: sessionUserId })); } catch(e){}
+  } else if (session?.user_id) {
+    userId = session.user_id;
+  }
+
+  if (userId) {
     document.getElementById('header-actions').innerHTML = `
       <button class="btn btn-ghost refresh-btn" onclick="loadDashboard('${userId}')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
         Atualizar
       </button>`;
-
     await loadDashboard(userId);
   } else {
     document.getElementById('login-screen').style.display = 'flex';
