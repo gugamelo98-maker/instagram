@@ -397,6 +397,118 @@ img { max-width: 100%; }
   font-size: 13px;
 }
 .refresh-btn svg { width: 14px; height: 14px; }
+
+/* ── Posts Grid ── */
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+.post-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+.post-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.post-card.active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(225,48,108,.2); }
+.post-thumb {
+  width: 100%; aspect-ratio: 1/1;
+  object-fit: cover; display: block;
+  background: var(--surface2);
+}
+.post-thumb-placeholder {
+  width: 100%; aspect-ratio: 1/1;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; background: var(--surface2);
+}
+.post-meta {
+  padding: 10px 12px;
+}
+.post-stats {
+  display: flex; gap: 10px; font-size: 12px; color: var(--fg2);
+  font-variant-numeric: tabular-nums;
+}
+.post-stat { display: flex; align-items: center; gap: 3px; font-weight: 600; color: var(--fg); }
+.post-stat span { font-size: 13px; }
+.post-date { font-size: 11px; color: var(--fg3); margin-top: 4px; }
+.post-type-badge {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 99px; margin-bottom: 6px;
+  background: var(--surface); border: 1px solid var(--border);
+}
+.post-type-badge.REEL { background: #f5f3ff; color: #7c3aed; border-color: #a78bfa; }
+.post-type-badge.CAROUSEL_ALBUM { background: #ecfeff; color: #0891b2; border-color: #67e8f9; }
+.post-type-badge.IMAGE { background: #fff7ed; color: #c2410c; border-color: #fdba74; }
+
+/* ── Caption Generator ── */
+.caption-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-top: 20px;
+  box-shadow: var(--shadow);
+}
+.caption-panel.hidden { display: none; }
+.caption-post-preview {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px; background: var(--surface2);
+  border-radius: var(--radius-sm); border: 1px solid var(--border);
+  margin-bottom: 18px;
+}
+.caption-thumb {
+  width: 56px; height: 56px; border-radius: 8px;
+  object-fit: cover; flex-shrink: 0;
+  background: var(--surface);
+}
+.caption-thumb-icon {
+  width: 56px; height: 56px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; background: var(--surface); flex-shrink: 0;
+}
+.caption-post-info { flex: 1; min-width: 0; }
+.caption-current {
+  font-size: 13px; color: var(--fg2); line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.caption-suggestions { display: flex; flex-direction: column; gap: 12px; }
+.caption-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+}
+.caption-tone {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+  color: var(--fg3); margin-bottom: 8px;
+}
+.caption-text {
+  font-size: 14px; color: var(--fg); line-height: 1.6;
+  white-space: pre-wrap; word-break: break-word;
+}
+.caption-actions { display: flex; gap: 8px; margin-top: 10px; }
+.btn-copy {
+  font-size: 12px; padding: 5px 12px; border-radius: 7px;
+  background: var(--accent); color: white; border: none; cursor: pointer;
+  font-family: inherit; font-weight: 600; transition: opacity .15s;
+}
+.btn-copy:hover { opacity: .85; }
+.btn-copy.copied { background: var(--green); }
+.caption-loading {
+  text-align: center; padding: 32px;
+  color: var(--fg2); font-size: 14px;
+}
+.posts-empty {
+  text-align: center; padding: 40px;
+  color: var(--fg2); font-size: 14px;
+}
+.posts-loading {
+  text-align: center; padding: 40px;
+  color: var(--fg2); font-size: 14px;
+}
 </style>
 </head>
 <body>
@@ -589,6 +701,31 @@ img { max-width: 100%; }
       </div>
     </div>
 
+    <!-- Posts Grid -->
+    <div class="score-section" style="margin-top:20px" id="posts-section">
+      <div class="section-title" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <span style="display:flex;align-items:center;gap:8px"><span>📸</span> Seus Posts</span>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost" style="font-size:12px;padding:5px 12px" onclick="loadPosts(currentUserId, true)">↻ Atualizar posts</button>
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--fg2);margin-bottom:16px">Clique em um post para ver análise e sugestões de legenda.</p>
+      <div class="posts-grid" id="posts-grid">
+        <div class="posts-loading">Carregando posts...</div>
+      </div>
+    </div>
+
+    <!-- Caption Generator Panel -->
+    <div class="caption-panel hidden" id="caption-panel">
+      <div class="section-title"><span>✍️</span> Sugestões de Legenda</div>
+      <div class="caption-post-preview" id="caption-preview">
+        <!-- populated by JS -->
+      </div>
+      <div class="caption-suggestions" id="caption-suggestions">
+        <div class="caption-loading">✨ Gerando sugestões...</div>
+      </div>
+    </div>
+
     <!-- Disconnect button -->
     <div style="text-align:center;padding:32px 0 16px">
       <button class="btn btn-ghost" onclick="disconnect()">Desconectar conta</button>
@@ -665,10 +802,13 @@ function fmtNum(n) {
 
 async function loadDashboard(userId) {
   setLoading(true, 'Buscando dados do Instagram...');
+  currentUserId = userId;
   try {
     // Call n8n to get cached profile + insights
     const data = await fetchJSON(`${CONFIG.N8N_WEBHOOK_BASE}/instagram-data?user_id=${userId}`);
     renderDashboard(data);
+    // Load posts async (don't block dashboard render)
+    loadPosts(userId);
   } catch(e) {
     showError('Não foi possível carregar os dados. Tente novamente.');
     console.error(e);
@@ -929,6 +1069,226 @@ function renderRecs(recs) {
         <div class="rec-desc">${r.desc}</div>
       </div>
     </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════
+// Posts + Caption Generator
+// ══════════════════════════════════════════════════
+let currentUserId = null;
+let cachedPosts = null;
+
+async function loadPosts(userId, forceRefresh = false) {
+  if (!userId) return;
+  currentUserId = userId;
+
+  const grid = document.getElementById('posts-grid');
+  if (cachedPosts && !forceRefresh) {
+    renderPostsGrid(cachedPosts);
+    return;
+  }
+
+  grid.innerHTML = '<div class="posts-loading">📸 Carregando seus posts...</div>';
+
+  try {
+    const res = await fetchJSON(`${CONFIG.N8N_WEBHOOK_BASE}/instagram-posts?user_id=${userId}`);
+    const posts = Array.isArray(res) ? res : (res.data || res.posts || []);
+    cachedPosts = posts;
+    renderPostsGrid(posts);
+  } catch(e) {
+    grid.innerHTML = `<div class="posts-empty">Não foi possível carregar os posts.<br><small style="color:var(--fg3)">${e.message}</small></div>`;
+  }
+}
+
+function renderPostsGrid(posts) {
+  const grid = document.getElementById('posts-grid');
+  if (!posts || !posts.length) {
+    grid.innerHTML = '<div class="posts-empty">Nenhum post encontrado.</div>';
+    return;
+  }
+
+  grid.innerHTML = posts.map((p, i) => {
+    const date = p.timestamp ? new Date(p.timestamp).toLocaleDateString('pt-BR', { day:'2-digit', month:'short' }) : '';
+    const typeLabel = p.media_type || 'IMAGE';
+    const thumb = p.thumbnail_url || p.media_url;
+    const typeMap = { IMAGE:'Foto', VIDEO:'Vídeo', REEL:'Reel', CAROUSEL_ALBUM:'Carrossel' };
+
+    return `<div class="post-card" id="post-${i}" onclick="selectPost(${i})">
+      ${thumb
+        ? `<img class="post-thumb" src="${thumb}" alt="post" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+        : ''
+      }
+      <div class="post-thumb-placeholder" style="${thumb?'display:none':''}">
+        ${typeLabel==='REEL'?'🎬':typeLabel==='CAROUSEL_ALBUM'?'🖼️':'📷'}
+      </div>
+      <div class="post-meta">
+        <div class="post-type-badge ${typeLabel}">${typeMap[typeLabel]||typeLabel}</div>
+        <div class="post-stats">
+          <div class="post-stat">❤️ <span>${fmtNum(p.like_count||0)}</span></div>
+          <div class="post-stat">💬 <span>${fmtNum(p.comments_count||0)}</span></div>
+          ${p.reach ? `<div class="post-stat">👁️ <span>${fmtNum(p.reach)}</span></div>` : ''}
+        </div>
+        <div class="post-date">${date}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectPost(idx) {
+  // toggle active state
+  document.querySelectorAll('.post-card').forEach(el => el.classList.remove('active'));
+  const card = document.getElementById('post-' + idx);
+  if (card) card.classList.add('active');
+
+  const post = cachedPosts[idx];
+  const panel = document.getElementById('caption-panel');
+  panel.classList.remove('hidden');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  // Preview
+  const thumb = post.thumbnail_url || post.media_url;
+  document.getElementById('caption-preview').innerHTML = `
+    ${thumb
+      ? `<img class="caption-thumb" src="${thumb}" alt="" onerror="this.replaceWith(document.createElement('span'))">`
+      : `<div class="caption-thumb-icon">${post.media_type==='REEL'?'🎬':'📷'}</div>`
+    }
+    <div class="caption-post-info">
+      <div style="font-size:12px;font-weight:700;color:var(--fg3);margin-bottom:4px">
+        Legenda atual ${post.like_count ? `· ❤️ ${fmtNum(post.like_count)}  💬 ${fmtNum(post.comments_count||0)}` : ''}
+      </div>
+      <div class="caption-current">${post.caption ? escapeHtml(post.caption) : '<em style="color:var(--fg3)">Sem legenda</em>'}</div>
+    </div>`;
+
+  generateCaptions(post);
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function generateCaptions(post) {
+  const el = document.getElementById('caption-suggestions');
+  el.innerHTML = '<div class="caption-loading">✨ Gerando sugestões com base no seu nicho...</div>';
+
+  // Get profile context from DOM
+  const name = document.getElementById('profile-name')?.textContent || '';
+  const handle = document.getElementById('profile-handle')?.textContent?.replace('@','') || '';
+  const followers = document.getElementById('stat-followers')?.textContent || '0';
+
+  // Small delay to feel like it's thinking
+  setTimeout(() => {
+    const captions = buildCaptions(post, { name, handle, followers });
+    el.innerHTML = captions.map(c => `
+      <div class="caption-card">
+        <div class="caption-tone">${c.tone}</div>
+        <div class="caption-text" id="cap-text-${c.id}">${escapeHtml(c.text)}</div>
+        <div class="caption-actions">
+          <button class="btn-copy" onclick="copyCaption('${c.id}', this)">📋 Copiar</button>
+        </div>
+      </div>`).join('');
+  }, 600);
+}
+
+function buildCaptions(post, profile) {
+  // Detect niche from bio context captured at login
+  let bioLower = '';
+  try {
+    const stored = JSON.parse(localStorage.getItem('ig_session') || '{}');
+    bioLower = (stored.biography || '').toLowerCase();
+  } catch(e) {}
+
+  const isFinance = bioLower.includes('consign') || bioLower.includes('crédito') || bioLower.includes('credito') || bioLower.includes('financ');
+  const isFitness = bioLower.includes('fit') || bioLower.includes('treino') || bioLower.includes('gym') || bioLower.includes('saúde');
+  const isFashion = bioLower.includes('moda') || bioLower.includes('roupa') || bioLower.includes('estilo');
+  const isFoto = bioLower.includes('fotograf') || bioLower.includes('photo');
+
+  const likeStr = post.like_count > 0 ? ` (${fmtNum(post.like_count)} curtidas)` : '';
+  const originalCaption = (post.caption || '').split('\n')[0].slice(0,60);
+  const isReel = post.media_type === 'REEL' || post.media_type === 'VIDEO';
+
+  let captions = [];
+
+  if (isFinance) {
+    captions = [
+      {
+        tone: '💼 Profissional & Direto',
+        text: `${originalCaption ? 'Sobre esse conteúdo: ' : ''}Crédito consignado é a modalidade com as menores taxas do mercado — ideal para quem quer resolver as finanças sem comprometer o orçamento.\n\n✅ Sem consulta ao SPC/Serasa\n✅ Desconto direto em folha\n✅ Atendimento 100% digital\n\nQuer saber quanto você tem disponível? 👇\n\n#creditoconsignado #emprestimoconsignado #financaspessoais`,
+      },
+      {
+        tone: '🤝 Humanizado & Próximo',
+        text: `Você sabia que muita gente paga juros altos sem precisar? 😔\n\nO crédito consignado pode ser a virada de chave que falta. Taxa menor, parcela que cabe no bolso e sem burocracia.\n\nMe chama no direct ou acessa o link da bio — vamos encontrar a melhor solução pra você 💙\n\n#credito #emprestimo #dinheiro #financaspessoais`,
+      },
+      {
+        tone: '❓ Educativo & Engajamento',
+        text: `3 perguntas que você deveria fazer antes de pegar qualquer empréstimo:\n\n1️⃣ Qual é a taxa de juros mensal?\n2️⃣ Tem tarifa de abertura de crédito?\n3️⃣ O valor da parcela cabe no meu orçamento?\n\nO consignado tem as menores taxas porque o desconto é em folha — você economiza muito comparado ao crédito pessoal comum 💡\n\nSalva esse post pra não esquecer! 📌\n\n#educacaofinanceira #creditoconsignado #dicas`,
+      },
+    ];
+  } else if (isFitness) {
+    captions = [
+      {
+        tone: '💪 Motivacional',
+        text: `Cada treino é um passo${likeStr ? '' : ' a mais'} em direção à melhor versão de você mesmo 🔥\n\nNão espera a segunda-feira, não espera o momento perfeito. O momento é agora.\n\nVamos? 💪\n\n#treino #fitness #evolução #vidafit`,
+      },
+      {
+        tone: '🎯 Educativo & Dica',
+        text: `Quer resultado mais rápido? Foca nesses 3 pilares:\n\n1️⃣ Consistência nos treinos\n2️⃣ Alimentação alinhada com o objetivo\n3️⃣ Sono de qualidade (esse é o mais ignorado!)\n\nSalva esse post e compartilha com quem precisa! 💚\n\n#fitness #saude #treino #emagrecimento`,
+      },
+      {
+        tone: '❤️ Conexão & Comunidade',
+        text: `Hoje foi dia de ${isReel ? 'mostrar o processo' : 'registrar o momento'} 📸\n\nA jornada fitness tem altos e baixos, mas o importante é não parar.\n\nMe conta aqui nos comentários: qual é seu maior desafio hoje? 👇\n\n#fitness #comunidade #jornada #vidasaudavel`,
+      },
+    ];
+  } else if (isFashion) {
+    captions = [
+      {
+        tone: '✨ Editorial & Estilo',
+        text: `Estilo não é o que você veste — é como você se apresenta ao mundo 🖤\n\n${originalCaption || 'Cada peça conta uma história. Qual história você quer contar hoje?'}\n\nLink na bio para encontrar looks assim 👆\n\n#moda #estilo #lookdodia #ootd #modabrasileира`,
+      },
+      {
+        tone: '💡 Dica Prática',
+        text: `Como montar um look completo sem gastar muito 💡\n\n👗 Invista numa peça básica de qualidade\n🎨 Aposte numa cor ou estampa de destaque\n👜 Acessório certo transforma qualquer roupa\n\nSalva pra usar como referência! 🔖\n\n#dicas #moda #lookdodia`,
+      },
+      {
+        tone: '🛍️ Engajamento & CTA',
+        text: `${isReel ? 'Arrasta pro lado pra ver o look completo 👉' : 'Que combinação você acharia mais sua?'}\n\nMe conta nos comentários qual peça você mais gostou! 👇\n\nLink da coleção na bio 🛍️\n\n#moda #compras #lookdodia #ootdbr`,
+      },
+    ];
+  } else {
+    captions = [
+      {
+        tone: '🎯 Direto & Impactante',
+        text: `${originalCaption ? escapeHtml(originalCaption) + ' — ' : ''}Conteúdo que gera valor real para quem acompanha 🎯\n\nSe isso fez sentido pra você, salva e compartilha com alguém que precisa ver isso!\n\n#conteudo #dicas #empreendedorismo`,
+      },
+      {
+        tone: '❓ Pergunta & Engajamento',
+        text: `${isReel ? '🎬 Novo conteúdo no ar!' : '📸 Compartilhando aqui'}: ${originalCaption || 'algo que vai fazer você pensar'}\n\nMe conta nos comentários: isso ressoou com você?\n\nEngajamento é o que move qualquer projeto — então bora conversar! 👇\n\n#instagram #conteudo #comunidade`,
+      },
+      {
+        tone: '💡 Educativo & Valor',
+        text: `${originalCaption ? '💡 ' + escapeHtml(originalCaption) : '💡 Uma perspectiva diferente sobre isso:'}\n\n3 pontos que mudaram minha visão:\n\n1️⃣ Consistência bate talento no longo prazo\n2️⃣ Engajamento genuíno vale mais que números\n3️⃣ Conteúdo que ensina tem mais vida útil\n\nSalva esse post! 📌\n\n#dicas #aprendizado #crescimento`,
+      },
+    ];
+  }
+
+  return captions.map((c, i) => ({ ...c, id: `cap-${Date.now()}-${i}` }));
+}
+
+function copyCaption(id, btn) {
+  const el = document.getElementById('cap-text-' + id);
+  if (!el) return;
+  const text = el.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✅ Copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 Copiar'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    // Fallback: select text
+    const range = document.createRange();
+    range.selectNode(el);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    btn.textContent = '✅ Selecionado!';
+    setTimeout(() => { btn.textContent = '📋 Copiar'; }, 2000);
+  });
 }
 
 // ══════════════════════════════════════════════════
