@@ -2534,8 +2534,10 @@ async function runNicheAgent() {
 
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const text = await res.text();
+    console.log('[niche-insights] resposta bruta:', text);
     if (!text || !text.trim()) throw new Error('Resposta vazia do servidor');
     const data = JSON.parse(text);
+    console.log('[niche-insights] data parseado:', JSON.stringify(data));
     renderNicheResults(data, query, mode);
   } catch(e) {
     out.innerHTML = `<div class="output-card" style="border-left:3px solid var(--red)">
@@ -2551,7 +2553,9 @@ function renderNicheResults(data, query, mode) {
   const out = document.getElementById('na-output');
 
   // n8n retorna: ok, postsAnalyzed, avgLikes, avgComments, formatBreakdown, topHashtags, ctaPatterns, topPosts
-  if (!data.ok || !data.postsAnalyzed) {
+  // Mostra erro só se explicitamente ok:false e sem dados úteis
+  const temDados = data.postsAnalyzed || data.topPosts?.length || data.profileInfo;
+  if (data.ok === false && !temDados) {
     out.innerHTML = `<div class="output-card">
       <div class="output-card-label">Sem resultados</div>
       <div class="output-card-body">Nenhum post encontrado para "${query}". Tente outro ${mode === 'hashtag' ? 'hashtag' : 'perfil'}.</div>
