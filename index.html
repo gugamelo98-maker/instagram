@@ -1,907 +1,212 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Instagram Dashboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
-<style>
-/* ── Tokens ── */
-:root {
-  --bg: #f8f7f5;
-  --surface: #ffffff;
-  --surface2: #f2f0ed;
-  --border: #e5e2dc;
-  --fg: #1a1714;
-  --fg2: #6b6560;
-  --fg3: #9e9892;
-  --accent: #e1306c;
-  --accent2: #c13584;
-  --accent3: #833ab4;
-  --green: #22c55e;
-  --yellow: #f59e0b;
-  --red: #ef4444;
-  --blue: #3b82f6;
-  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.05);
-  --radius: 16px;
-  --radius-sm: 10px;
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #111010;
-    --surface: #1c1b1a;
-    --surface2: #252422;
-    --border: #2e2c2a;
-    --fg: #f0ede8;
-    --fg2: #a09890;
-    --fg3: #6b6560;
-    --shadow: 0 1px 3px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.2);
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #111010;
-  --surface: #1c1b1a;
-  --surface2: #252422;
-  --border: #2e2c2a;
-  --fg: #f0ede8;
-  --fg2: #a09890;
-  --fg3: #6b6560;
-  --shadow: 0 1px 3px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.2);
-  color-scheme: dark;
-}
-
-/* ── Reset ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--fg);
-  min-height: 100vh;
-  padding: 0 16px;
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 24px);
-}
-img { max-width: 100%; }
-
-/* ── Layout ── */
-.app { max-width: 900px; margin: 0 auto; }
-
-/* ── Header ── */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 0 16px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 24px;
-}
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 700;
-  font-size: 18px;
-  letter-spacing: -.3px;
-}
-.logo-icon {
-  width: 32px; height: 32px;
-  background: linear-gradient(135deg, var(--accent3), var(--accent), #f77737);
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  color: white; font-size: 16px;
-}
-.header-actions { display: flex; align-items: center; gap: 10px; }
-.btn {
-  border: none; cursor: pointer; font-family: inherit;
-  font-size: 14px; font-weight: 500; border-radius: 10px;
-  padding: 8px 16px; transition: opacity .15s, transform .1s;
-}
-.btn:hover { opacity: .85; }
-.btn:active { transform: scale(.97); }
-.btn-primary {
-  background: linear-gradient(135deg, var(--accent3), var(--accent));
-  color: white;
-}
-.btn-ghost {
-  background: var(--surface2);
-  color: var(--fg2);
-  border: 1px solid var(--border);
-}
-
-/* ── Login Screen ── */
-#login-screen {
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  min-height: 80vh; text-align: center; gap: 32px;
-}
-.login-hero {
-  display: flex; flex-direction: column; align-items: center; gap: 16px;
-}
-.login-hero-icon {
-  width: 80px; height: 80px;
-  background: linear-gradient(135deg, var(--accent3), var(--accent), #f77737);
-  border-radius: 24px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 40px;
-}
-.login-hero h1 { font-size: 28px; font-weight: 700; letter-spacing: -.5px; }
-.login-hero p { color: var(--fg2); font-size: 16px; max-width: 360px; line-height: 1.6; }
-.features {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px; width: 100%; max-width: 640px;
-}
-.feature-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 16px;
-  text-align: left;
-}
-.feature-card .icon { font-size: 22px; margin-bottom: 8px; }
-.feature-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-.feature-card p { font-size: 13px; color: var(--fg2); line-height: 1.5; }
-.connect-btn {
-  display: flex; align-items: center; gap: 10px;
-  background: linear-gradient(135deg, var(--accent3), var(--accent), #f77737);
-  color: white; border: none; cursor: pointer;
-  font-family: inherit; font-size: 16px; font-weight: 600;
-  padding: 14px 32px; border-radius: 14px;
-  transition: opacity .15s, transform .1s; box-shadow: 0 4px 20px rgba(225,48,108,.35);
-}
-.connect-btn:hover { opacity: .9; }
-.connect-btn:active { transform: scale(.97); }
-.connect-btn svg { width: 22px; height: 22px; }
-.privacy-note { font-size: 13px; color: var(--fg3); }
-
-/* ── Dashboard ── */
-#dashboard { display: none; }
-#dashboard.visible { display: block; }
-
-.profile-bar {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px 24px;
-  display: flex; align-items: center; gap: 16px;
-  margin-bottom: 24px;
-  box-shadow: var(--shadow);
-}
-.profile-avatar {
-  width: 60px; height: 60px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent3), var(--accent));
-  display: flex; align-items: center; justify-content: center;
-  color: white; font-size: 24px; font-weight: 700;
-  flex-shrink: 0; overflow: hidden;
-}
-.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.profile-info { flex: 1; min-width: 0; }
-.profile-info h2 { font-size: 18px; font-weight: 700; letter-spacing: -.3px; }
-.profile-info .handle { color: var(--fg2); font-size: 14px; }
-.profile-badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  background: #dcfce7; color: #15803d;
-  font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 99px;
-  margin-top: 4px;
-}
-:root[data-theme="dark"] .profile-badge,
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .profile-badge {
-  background: #14532d33; color: #4ade80;
-}}
-.profile-stats {
-  display: flex; gap: 24px; flex-shrink: 0;
-}
-.pstat { text-align: center; }
-.pstat-n { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.5px; }
-.pstat-l { font-size: 12px; color: var(--fg2); }
-
-/* ── Score Card ── */
-.score-section {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 24px;
-  margin-bottom: 20px;
-  box-shadow: var(--shadow);
-}
-.section-title {
-  font-size: 16px; font-weight: 700; margin-bottom: 16px;
-  display: flex; align-items: center; gap: 8px;
-}
-.section-title span { font-size: 18px; }
-.score-overview {
-  display: flex; align-items: center; gap: 24px; margin-bottom: 20px;
-}
-.score-ring {
-  width: 100px; height: 100px; flex-shrink: 0;
-  position: relative;
-}
-.score-ring svg { transform: rotate(-90deg); }
-.score-ring-text {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%,-50%);
-  text-align: center;
-}
-.score-ring-text .num { font-size: 24px; font-weight: 800; }
-.score-ring-text .label { font-size: 10px; color: var(--fg2); }
-.score-summary h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-.score-summary p { font-size: 14px; color: var(--fg2); line-height: 1.6; }
-
-.criteria-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px;
-}
-.criterion {
-  display: flex; align-items: flex-start; gap: 10px;
-  padding: 12px 14px;
-  background: var(--surface2);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-}
-.crit-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
-.crit-info { flex: 1; min-width: 0; }
-.crit-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
-.crit-note { font-size: 12px; color: var(--fg2); }
-.crit-badge {
-  font-size: 11px; font-weight: 700; padding: 2px 8px;
-  border-radius: 99px; flex-shrink: 0; margin-top: 2px;
-}
-.pass { background: #dcfce7; color: #15803d; }
-.needs-work { background: #fef9c3; color: #854d0e; }
-.fail { background: #fee2e2; color: #991b1b; }
-
-/* ── Metrics Grid ── */
-.metrics-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px;
-  margin-bottom: 20px;
-}
-.metric-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 16px;
-  box-shadow: var(--shadow);
-}
-.metric-label { font-size: 12px; color: var(--fg2); font-weight: 500; margin-bottom: 4px; }
-.metric-value { font-size: 26px; font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
-.metric-sub { font-size: 12px; color: var(--fg3); margin-top: 2px; }
-.metric-trend { font-size: 13px; font-weight: 600; margin-top: 4px; }
-.trend-up { color: var(--green); }
-.trend-down { color: var(--red); }
-
-/* ── Algo Section ── */
-.algo-signals {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;
-}
-.signal-row {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 14px;
-  background: var(--surface2);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-}
-.signal-priority {
-  width: 28px; height: 28px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 800; color: white; flex-shrink: 0;
-}
-.p1 { background: var(--accent); }
-.p2 { background: var(--accent3); }
-.p3 { background: var(--blue); }
-.p4 { background: var(--fg3); }
-.signal-info { flex: 1; min-width: 0; }
-.signal-name { font-size: 13px; font-weight: 600; }
-.signal-tip { font-size: 12px; color: var(--fg2); }
-.signal-bar-wrap { width: 100%; height: 4px; background: var(--border); border-radius: 2px; margin-top: 6px; }
-.signal-bar { height: 4px; border-radius: 2px; }
-
-/* ── Hashtag Section ── */
-.hashtag-tiers { display: flex; flex-direction: column; gap: 12px; }
-.tier {
-  padding: 16px;
-  background: var(--surface2);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-}
-.tier-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.tier-label { font-size: 13px; font-weight: 700; }
-.tier-range { font-size: 12px; color: var(--fg3); }
-.tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.tag {
-  font-size: 13px; font-weight: 500;
-  padding: 4px 12px; border-radius: 99px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--fg);
-  cursor: default;
-}
-.tier-niche .tag { border-color: #a78bfa; color: #7c3aed; background: #f5f3ff; }
-.tier-mid .tag { border-color: #67e8f9; color: #0891b2; background: #ecfeff; }
-.tier-broad .tag { border-color: #fdba74; color: #c2410c; background: #fff7ed; }
-
-/* ── Content Timing ── */
-.timing-grid {
-  display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;
-}
-.day-col { display: flex; flex-direction: column; gap: 4px; }
-.day-label { font-size: 11px; color: var(--fg3); text-align: center; font-weight: 600; text-transform: uppercase; }
-.time-slot {
-  padding: 8px 4px; border-radius: 6px; text-align: center;
-  font-size: 11px; font-weight: 600;
-  background: var(--surface2); border: 1px solid var(--border); color: var(--fg3);
-}
-.time-slot.hot { background: #fce7f3; border-color: #f9a8d4; color: #be185d; }
-.time-slot.warm { background: #fef3c7; border-color: #fde68a; color: #92400e; }
-
-/* ── Recommendations ── */
-.recs { display: flex; flex-direction: column; gap: 10px; }
-.rec {
-  display: flex; align-items: flex-start; gap: 14px;
-  padding: 14px 16px;
-  background: var(--surface2);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-}
-.rec-icon { font-size: 22px; flex-shrink: 0; }
-.rec-body { flex: 1; min-width: 0; }
-.rec-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
-.rec-desc { font-size: 13px; color: var(--fg2); line-height: 1.6; }
-.priority-tag {
-  font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px;
-  margin-left: 8px; vertical-align: middle;
-}
-.urgent { background: #fee2e2; color: #991b1b; }
-.medium { background: #fef9c3; color: #854d0e; }
-
-/* ── Loading State ── */
-.loading-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,.5); backdrop-filter: blur(4px);
-  z-index: 100; align-items: center; justify-content: center;
-  flex-direction: column; gap: 16px;
-}
-.loading-overlay.show { display: flex; }
-.spinner {
-  width: 48px; height: 48px;
-  border: 3px solid rgba(255,255,255,.2);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin .8s linear infinite;
-}
-.loading-text { color: white; font-size: 16px; font-weight: 500; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ── Sections Spacing ── */
-.section-gap { display: grid; gap: 20px; }
-.two-col { grid-template-columns: 1fr 1fr; }
-@media (max-width: 640px) {
-  .two-col { grid-template-columns: 1fr; }
-  .profile-stats { display: none; }
-  .profile-bar { flex-wrap: wrap; }
-  .timing-grid { grid-template-columns: repeat(7, 1fr); font-size: 10px; }
-  .score-overview { flex-direction: column; text-align: center; }
-}
-
-/* ── Error Banner ── */
-.error-banner {
-  background: #fee2e2; border: 1px solid #fca5a5; border-radius: var(--radius-sm);
-  padding: 12px 16px; color: #991b1b; font-size: 14px;
-  display: none; margin-bottom: 16px;
-}
-.error-banner.show { display: block; }
-
-/* ── Refresh button ── */
-.refresh-btn {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 13px;
-}
-.refresh-btn svg { width: 14px; height: 14px; }
-</style>
-</head>
-<body>
-<div class="app">
-  <!-- Header -->
-  <header class="header">
-    <div class="logo">
-      <div class="logo-icon">📊</div>
-      IG Insights
-    </div>
-    <div class="header-actions" id="header-actions">
-      <!-- populated by JS -->
-    </div>
-  </header>
-
-  <!-- Error Banner -->
-  <div class="error-banner" id="error-banner"></div>
-
-  <!-- ═══ LOGIN SCREEN ═══ -->
-  <div id="login-screen">
-    <div class="login-hero">
-      <div class="login-hero-icon">📸</div>
-      <h1>Sua conta Instagram, analisada</h1>
-      <p>Conecte sua conta e receba um diagnóstico completo: perfil, algoritmo, hashtags e os melhores horários para postar.</p>
-    </div>
-
-    <div class="features">
-      <div class="feature-card">
-        <div class="icon">🎯</div>
-        <h3>Score de Perfil</h3>
-        <p>9 critérios avaliados: foto, bio, destaques, grid e mais.</p>
-      </div>
-      <div class="feature-card">
-        <div class="icon">📈</div>
-        <h3>Sinais do Algoritmo</h3>
-        <p>Sends, saves, comments — o que o algoritmo de 2026 valoriza.</p>
-      </div>
-      <div class="feature-card">
-        <div class="icon">#️⃣</div>
-        <h3>Estratégia de Hashtags</h3>
-        <p>Mix ideal de tags nicho/mid/broad com volume calibrado.</p>
-      </div>
-      <div class="feature-card">
-        <div class="icon">🕐</div>
-        <h3>Melhores Horários</h3>
-        <p>Janelas de postagem baseadas no engajamento do seu nicho.</p>
-      </div>
-    </div>
-
-    <button class="connect-btn" onclick="startLogin()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-      </svg>
-      Conectar Instagram
-    </button>
-
-    <p class="privacy-note">🔒 Seus dados ficam apenas em você. Sem postagens automáticas.</p>
-  </div>
-
-  <!-- ═══ DASHBOARD ═══ -->
-  <div id="dashboard">
-
-    <!-- Profile Bar -->
-    <div class="profile-bar">
-      <div class="profile-avatar" id="avatar">?</div>
-      <div class="profile-info">
-        <h2 id="profile-name">—</h2>
-        <div class="handle" id="profile-handle">@—</div>
-        <div class="profile-badge" id="account-type">✓ Conectado</div>
-      </div>
-      <div class="profile-stats">
-        <div class="pstat">
-          <div class="pstat-n" id="stat-followers">—</div>
-          <div class="pstat-l">Seguidores</div>
-        </div>
-        <div class="pstat">
-          <div class="pstat-n" id="stat-following">—</div>
-          <div class="pstat-l">Seguindo</div>
-        </div>
-        <div class="pstat">
-          <div class="pstat-n" id="stat-posts">—</div>
-          <div class="pstat-l">Posts</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Metrics Row -->
-    <div class="metrics-grid" id="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-label">Taxa de Engajamento</div>
-        <div class="metric-value" id="m-engagement">—</div>
-        <div class="metric-sub">média dos últimos posts</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Alcance Médio</div>
-        <div class="metric-value" id="m-reach">—</div>
-        <div class="metric-sub">por publicação</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Impressões</div>
-        <div class="metric-value" id="m-impressions">—</div>
-        <div class="metric-sub">últimos 30 dias</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Score do Perfil</div>
-        <div class="metric-value" id="m-score" style="background: linear-gradient(135deg,var(--accent3),var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">—/9</div>
-        <div class="metric-sub">critérios aprovados</div>
-      </div>
-    </div>
-
-    <!-- Two Column Layout -->
-    <div class="section-gap two-col">
-
-      <!-- Profile Score -->
-      <div class="score-section">
-        <div class="section-title"><span>🎯</span> Score de Perfil</div>
-        <div class="score-overview">
-          <div class="score-ring">
-            <svg width="100" height="100" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="40" fill="none" stroke="var(--border)" stroke-width="10"/>
-              <circle cx="50" cy="50" r="40" fill="none"
-                stroke="url(#scoreGrad)" stroke-width="10"
-                stroke-linecap="round"
-                stroke-dasharray="251.2"
-                stroke-dashoffset="251.2"
-                id="score-circle"/>
-              <defs>
-                <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#833ab4"/>
-                  <stop offset="100%" stop-color="#e1306c"/>
-                </linearGradient>
-              </defs>
-            </svg>
-            <div class="score-ring-text">
-              <div class="num" id="score-num">—</div>
-              <div class="label">de 9</div>
-            </div>
-          </div>
-          <div class="score-summary">
-            <h3 id="score-grade">Aguardando dados</h3>
-            <p id="score-desc">Conecte sua conta para ver a avaliação completa do seu perfil.</p>
-          </div>
-        </div>
-        <div class="criteria-grid" id="criteria-grid">
-          <!-- populated by JS -->
-        </div>
-      </div>
-
-      <!-- Algorithm Signals -->
-      <div class="score-section">
-        <div class="section-title"><span>📡</span> Sinais do Algoritmo 2026</div>
-        <div class="algo-signals" id="algo-signals">
-          <!-- populated by JS -->
-        </div>
-      </div>
-    </div>
-
-    <!-- Hashtag Strategy -->
-    <div class="score-section" style="margin-top:20px">
-      <div class="section-title"><span>#️⃣</span> Estratégia de Hashtags</div>
-      <p style="font-size:13px; color:var(--fg2); margin-bottom:16px;">Mix ideal: 3-5 tags balanceadas entre nicho, mid-tier e broad. Evite tags com +5M posts.</p>
-      <div class="hashtag-tiers" id="hashtag-tiers">
-        <!-- populated by JS -->
-      </div>
-    </div>
-
-    <!-- Two Column: Timing + Recommendations -->
-    <div class="section-gap two-col" style="margin-top:20px">
-
-      <!-- Timing -->
-      <div class="score-section">
-        <div class="section-title"><span>🕐</span> Melhores Horários para Postar</div>
-        <p style="font-size:13px;color:var(--fg2);margin-bottom:14px;">Baseado em dados de engajamento do nicho. Horário de Brasília.</p>
-        <div class="timing-grid" id="timing-grid">
-          <!-- populated by JS -->
-        </div>
-        <div style="display:flex;gap:12px;margin-top:12px;font-size:12px;color:var(--fg2)">
-          <span>🔴 Ótimo</span><span>🟡 Bom</span>
-        </div>
-      </div>
-
-      <!-- Recommendations -->
-      <div class="score-section">
-        <div class="section-title"><span>💡</span> Recomendações</div>
-        <div class="recs" id="recs">
-          <!-- populated by JS -->
-        </div>
-      </div>
-    </div>
-
-    <!-- Disconnect button -->
-    <div style="text-align:center;padding:32px 0 16px">
-      <button class="btn btn-ghost" onclick="disconnect()">Desconectar conta</button>
-    </div>
-  </div>
-</div>
-
-<!-- Loading Overlay -->
-<div class="loading-overlay" id="loading-overlay">
-  <div class="spinner"></div>
-  <div class="loading-text" id="loading-text">Carregando dados...</div>
-</div>
-
-<script>
-// ══════════════════════════════════════════════════
-// CONFIGURAÇÃO — substitua estes valores
-// ══════════════════════════════════════════════════
-const CONFIG = {
-  META_APP_ID: '1123465306700530',
-  N8N_WEBHOOK_BASE: 'https://rarelookingorca-n8n.cloudfy.live/webhook',
-  SUPABASE_URL: 'https://sfjxgbkvnjfvzbguwwhf.supabase.co',
-  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmanhnYmt2bmpmdnpiZ3V3d2hmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5NjM3MzAsImV4cCI6MjA4NDUzOTczMH0.JtlgLxwYEkvIZEqGqDUOi3vng2HAf9M34XayW4w6orA',
-  REDIRECT_URI: window.location.origin + '/callback.html',
-};
-
-// ══════════════════════════════════════════════════
-// OAuth helpers
-// ══════════════════════════════════════════════════
-function startLogin() {
-  const state = crypto.randomUUID();
-  sessionStorage.setItem('oauth_state', state);
-  const params = new URLSearchParams({
-    client_id: CONFIG.META_APP_ID,
-    redirect_uri: CONFIG.REDIRECT_URI,
-    scope: 'instagram_business_basic,instagram_manage_insights',
-    response_type: 'code',
-    state,
-  });
-  window.location.href = `https://www.instagram.com/oauth/authorize?${params}`;
-}
-
-function disconnect() {
-  try { localStorage.removeItem('ig_session'); } catch(e){}
-  location.reload();
-}
-
-async function fetchJSON(url, opts={}) {
-  const r = await fetch(url, opts);
-  if (!r.ok) throw new Error(`HTTP ${r.status}`);
-  return r.json();
-}
-
-function showError(msg) {
-  const el = document.getElementById('error-banner');
-  el.textContent = '⚠️ ' + msg;
-  el.classList.add('show');
-}
-
-function setLoading(show, text='Carregando dados...') {
-  document.getElementById('loading-overlay').classList.toggle('show', show);
-  document.getElementById('loading-text').textContent = text;
-}
-
-// ══════════════════════════════════════════════════
-// Load & render data
-// ══════════════════════════════════════════════════
-function fmtNum(n) {
-  if (!n && n !== 0) return '—';
-  if (n >= 1_000_000) return (n/1_000_000).toFixed(1) + 'M';
-  if (n >= 1_000) return (n/1_000).toFixed(1) + 'K';
-  return n.toLocaleString('pt-BR');
-}
-
-async function loadDashboard(userId) {
-  setLoading(true, 'Buscando dados do Instagram...');
-  try {
-    // Call n8n to get cached profile + insights
-    const data = await fetchJSON(`${CONFIG.N8N_WEBHOOK_BASE}/instagram-data?user_id=${userId}`);
-    renderDashboard(data);
-  } catch(e) {
-    showError('Não foi possível carregar os dados. Tente novamente.');
-    console.error(e);
-  } finally {
-    setLoading(false);
-  }
-}
-
-function renderDashboard(data) {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('dashboard').style.display = 'block';
-
-  // Profile bar
-  const profile = data.profile || {};
-  document.getElementById('profile-name').textContent = profile.name || profile.username || '—';
-  document.getElementById('profile-handle').textContent = '@' + (profile.username || '—');
-  document.getElementById('stat-followers').textContent = fmtNum(profile.followers_count);
-  document.getElementById('stat-following').textContent = fmtNum(profile.follows_count);
-  document.getElementById('stat-posts').textContent = fmtNum(profile.media_count);
-
-  // Avatar
-  const avatarEl = document.getElementById('avatar');
-  if (profile.profile_picture_url) {
-    avatarEl.innerHTML = `<img src="${profile.profile_picture_url}" alt="avatar">`;
-  } else {
-    avatarEl.textContent = (profile.name || profile.username || '?')[0].toUpperCase();
-  }
-
-  // Metrics
-  const insights = data.insights || {};
-  document.getElementById('m-engagement').textContent = insights.engagement_rate ? insights.engagement_rate.toFixed(2) + '%' : '—';
-  document.getElementById('m-reach').textContent = fmtNum(insights.avg_reach);
-  document.getElementById('m-impressions').textContent = fmtNum(insights.total_impressions);
-
-  // Profile score
-  renderProfileScore(data.profile_score || {});
-  // Algorithm signals
-  renderAlgoSignals(data.algo || {});
-  // Hashtags
-  renderHashtags(data.hashtags || {});
-  // Timing
-  renderTiming(data.timing || {});
-  // Recs
-  renderRecs(data.recommendations || []);
-}
-
-// ── Profile Score (9 critérios) ──────────────────
-const CRITERIA = [
-  { key: 'photo', name: 'Foto de perfil', icon: '📸' },
-  { key: 'name_field', name: 'Campo NOME (keywords)', icon: '✏️' },
-  { key: 'handle', name: 'Handle/arroba', icon: '@' },
-  { key: 'bio', name: 'Bio (≤150 chars)', icon: '📝' },
-  { key: 'link', name: 'Link na bio', icon: '🔗' },
-  { key: 'category', name: 'Categoria de negócio', icon: '🏷️' },
-  { key: 'highlights', name: 'Destaques (stories)', icon: '⭐' },
-  { key: 'grid', name: 'Primeiros 9 posts', icon: '🔲' },
-  { key: 'pinned', name: 'Posts fixados', icon: '📌' },
-];
-
-function renderProfileScore(scoreData) {
-  const passed = Object.values(scoreData).filter(v => v === 'pass').length;
-  document.getElementById('m-score').textContent = `${passed}/9`;
-  document.getElementById('score-num').textContent = passed;
-
-  // Animate ring
-  const pct = passed / 9;
-  const circ = 251.2;
-  document.getElementById('score-circle').style.strokeDashoffset = circ - (circ * pct);
-
-  // Grade
-  const grades = [
-    [8, 'Excelente 🏆', 'Perfil muito bem otimizado. Pequenos ajustes podem ainda melhorar a descoberta.'],
-    [6, 'Bom 👍', 'Perfil sólido com margem de melhoria em alguns pontos-chave.'],
-    [4, 'Regular ⚠️', 'Vários aspectos do perfil precisam de atenção para melhorar o alcance.'],
-    [0, 'Precisa de atenção 🚨', 'Seu perfil tem lacunas importantes que estão limitando seu crescimento.'],
-  ];
-  const [, grade, desc] = grades.find(([min]) => passed >= min);
-  document.getElementById('score-grade').textContent = grade;
-  document.getElementById('score-desc').textContent = desc;
-
-  // Criteria grid
-  const grid = document.getElementById('criteria-grid');
-  grid.innerHTML = CRITERIA.map(c => {
-    const status = scoreData[c.key] || 'needs-work';
-    const labels = { pass: '✓ OK', 'needs-work': '~ Melhorar', fail: '✗ Falta' };
-    const notes = {
-      photo: 'Rosto visível, fundo limpo, boa iluminação',
-      name_field: 'Use palavras-chave buscadas pelo seu nicho',
-      handle: 'Curto, memorável, sem números aleatórios',
-      bio: 'CTA claro, palavra-chave, emoji e proposta de valor',
-      link: 'Linktree ou página de destino relevante',
-      category: 'Selecionada nas configurações profissionais',
-      highlights: 'Capas padronizadas, mínimo 4 categorias',
-      grid: 'Consistência visual, paleta coerente',
-      pinned: 'Melhor conteúdo ou apresentação fixada',
-    };
-    return `<div class="criterion">
-      <div class="crit-icon">${c.icon}</div>
-      <div class="crit-info">
-        <div class="crit-name">${c.name}</div>
-        <div class="crit-note">${notes[c.key] || ''}</div>
-      </div>
-      <div class="crit-badge ${status}">${labels[status] || '—'}</div>
-    </div>`;
-  }).join('');
-}
-
-// ── Algorithm Signals ─────────────────────────────
-function renderAlgoSignals(algoData) {
-  const signals = [
-    { key: 'sends', name: 'Sends (compartilhamentos)', tip: 'Sinal mais poderoso de 2026', priority: 1, color: '#e1306c', pct: algoData.sends_score ?? 0 },
-    { key: 'saves', name: 'Saves', tip: 'Indica conteúdo de alto valor', priority: 2, color: '#833ab4', pct: algoData.saves_score ?? 0 },
-    { key: 'comments', name: 'Comentários', tip: 'Especialmente respostas longas', priority: 3, color: '#3b82f6', pct: algoData.comments_score ?? 0 },
-    { key: 'likes', name: 'Likes', tip: 'Importante mas menos que acima', priority: 4, color: '#9e9892', pct: algoData.likes_score ?? 0 },
-    { key: 'watch_time', name: 'Tempo de visualização', tip: 'Para Reels: >80% = boost', priority: 2, color: '#833ab4', pct: algoData.watch_time_score ?? 0 },
-    { key: 'early_window', name: 'Janela das primeiras 1h', tip: 'Engajamento nos primeiros 60min define alcance', priority: 1, color: '#e1306c', pct: algoData.early_window_score ?? 0 },
-  ];
-  document.getElementById('algo-signals').innerHTML = signals.map(s => `
-    <div class="signal-row">
-      <div class="signal-priority p${s.priority}">${s.priority}</div>
-      <div class="signal-info">
-        <div class="signal-name">${s.name}</div>
-        <div class="signal-tip">${s.tip}</div>
-        <div class="signal-bar-wrap">
-          <div class="signal-bar" style="width:${s.pct}%;background:${s.color}"></div>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-// ── Hashtags ─────────────────────────────────────
-function renderHashtags(hashtagData) {
-  const tiers = [
+{
+  "nodes": [
     {
-      key: 'niche', cls: 'tier-niche', label: '🟣 Nicho',
-      range: '<50K posts', count: '2 tags',
-      tags: hashtagData.niche || ['#seunicho', '#mercadoespecifico', '#topicoespecifico'],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "instagram-auth",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://instagram-alpha-self.vercel.app"
+        }
+      },
+      "id": "8e0ffd4e-1c2c-42ef-89c4-2f1033f6a56f",
+      "name": "🔐 Webhook - Recebe código OAuth",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-480, 192],
+      "webhookId": "instagram-auth"
     },
     {
-      key: 'mid', cls: 'tier-mid', label: '🔵 Mid-tier',
-      range: '50K – 500K posts', count: '2 tags',
-      tags: hashtagData.mid || ['#categoriamid', '#temamedio'],
+      "parameters": {
+        "path": "instagram-data",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://instagram-alpha-self.vercel.app"
+        }
+      },
+      "id": "81676bc5-6b19-4a9d-864a-2d9ddecc35d4",
+      "name": "📊 Webhook - Busca dados do usuário",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-480, 448],
+      "webhookId": "instagram-data"
     },
     {
-      key: 'broad', cls: 'tier-broad', label: '🟠 Broad',
-      range: '500K – 5M posts', count: '1 tag',
-      tags: hashtagData.broad || ['#categoriaampla'],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.instagram.com/oauth/access_token",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "client_id", "value": "1123465306700530" },
+            { "name": "client_secret", "value": "1291ff3370b7fe375096b368538e38ac" },
+            { "name": "grant_type", "value": "authorization_code" },
+            { "name": "redirect_uri", "value": "https://instagram-alpha-self.vercel.app/callback.html" },
+            { "name": "code", "value": "={{ $json.body.code }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1b2140fc-eeb0-4cf2-8aba-cd11a6e08474",
+      "name": "🔄 Trocar código por token",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-240, 112]
     },
-  ];
-  document.getElementById('hashtag-tiers').innerHTML = tiers.map(t => `
-    <div class="tier ${t.cls}">
-      <div class="tier-header">
-        <div class="tier-label">${t.label} · ${t.count}</div>
-        <div class="tier-range">${t.range}</div>
-      </div>
-      <div class="tags">${t.tags.map(h => `<span class="tag">${h.startsWith('#') ? h : '#'+h}</span>`).join('')}</div>
-    </div>`).join('');
-}
-
-// ── Timing ───────────────────────────────────────
-function renderTiming(timingData) {
-  const days = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
-  const times = ['6h','9h','12h','18h','20h'];
-  // Default hot slots if no data
-  const hotSlots = timingData.hot || [[1,3],[2,1],[3,3],[4,1],[5,3],[6,4],[0,3]]; // [dayIndex, timeIndex]
-  const warmSlots = timingData.warm || [[0,1],[1,1],[2,3],[3,3],[4,1],[5,2],[6,1]];
-
-  const isHot = (d,t) => hotSlots.some(([dd,tt]) => dd===d && tt===t);
-  const isWarm = (d,t) => warmSlots.some(([dd,tt]) => dd===d && tt===t);
-
-  document.getElementById('timing-grid').innerHTML =
-    days.map((day, d) => `
-      <div class="day-col">
-        <div class="day-label">${day}</div>
-        ${times.map((time, t) => `
-          <div class="time-slot ${isHot(d,t) ? 'hot' : isWarm(d,t) ? 'warm' : ''}">
-            ${time}
-          </div>`).join('')}
-      </div>`).join('');
-}
-
-// ── Recommendations ──────────────────────────────
-function renderRecs(recs) {
-  if (!recs.length) {
-    recs = [
-      { icon: '📲', title: 'Ative os Sends', desc: 'Crie conteúdo que as pessoas queiram reencaminhar. Listas, dicas práticas e conteúdo motivacional têm alta taxa de send.', urgency: 'urgent' },
-      { icon: '🎯', title: 'Poste no seu melhor horário', desc: 'Os primeiros 30-60 minutos determinam o alcance do post. Poste quando seu público está mais ativo.', urgency: 'urgent' },
-      { icon: '#️⃣', title: 'Revise suas hashtags', desc: 'Use 3-5 tags estratégicas. Evite tags proibidas ou com +10M posts que diluem sua visibilidade.', urgency: 'medium' },
-      { icon: '📸', title: 'Atualize os Destaques', desc: 'Mantenha pelo menos 4 categorias de Destaques com capas padronizadas. Visitantes cheam o perfil antes de seguir.', urgency: 'medium' },
-      { icon: '💬', title: 'Responda comentários em 1h', desc: 'Responder dentro da janela de 1 hora amplifica o alcance. Configure notificações para não perder.', urgency: 'medium' },
-    ];
-  }
-  document.getElementById('recs').innerHTML = recs.map(r => `
-    <div class="rec">
-      <div class="rec-icon">${r.icon}</div>
-      <div class="rec-body">
-        <div class="rec-title">${r.title}<span class="priority-tag ${r.urgency}">${r.urgency === 'urgent' ? '🔴 Urgente' : '🟡 Importante'}</span></div>
-        <div class="rec-desc">${r.desc}</div>
-      </div>
-    </div>`).join('');
-}
-
-// ══════════════════════════════════════════════════
-// Init
-// ══════════════════════════════════════════════════
-async function init() {
-  // Check if returning from OAuth callback
-  const params = new URLSearchParams(location.search);
-  const sessionCode = params.get('session');
-
-  // Check stored session
-  let session = null;
-  try { session = JSON.parse(localStorage.getItem('ig_session')); } catch(e) {}
-
-  if (sessionCode || session?.user_id) {
-    if (sessionCode) {
-      try { localStorage.setItem('ig_session', JSON.stringify({ user_id: sessionCode })); } catch(e){}
+    {
+      "parameters": {
+        "url": "=https://graph.instagram.com/v21.0/me?fields=id,name,username,biography,followers_count,follows_count,media_count,profile_picture_url,website,account_type&access_token={{ $json.access_token }}",
+        "options": {}
+      },
+      "id": "7f21ce98-5c2c-484d-86b6-999065df863e",
+      "name": "👤 Buscar perfil Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.instagram.com/v21.0/me/media?fields=id,caption,media_type,like_count,comments_count,timestamp,insights.metric(impressions,reach,saved,video_views)&limit=20&access_token={{ $('🔄 Trocar código por token').item.json.access_token }}",
+        "options": {}
+      },
+      "id": "0f92da0f-c309-4987-9ba8-08bc32a1e07b",
+      "name": "📸 Buscar posts recentes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [0, 160]
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.instagram.com/v21.0/{{ $('🔄 Trocar código por token').item.json.user_id }}/insights?metric=impressions,reach,profile_views,accounts_engaged&period=day&since={{ Math.floor((Date.now() - 30*24*60*60*1000)/1000) }}&until={{ Math.floor(Date.now()/1000) }}&access_token={{ $('🔄 Trocar código por token').item.json.access_token }}",
+        "options": {}
+      },
+      "id": "7ec0a10d-bce5-4fe9-8843-debec771c2da",
+      "name": "📈 Buscar insights da conta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [0, 320]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pega dados dos nós anteriores\nconst tokenData = $('🔄 Trocar código por token').item.json;\nconst profile = $('👤 Buscar perfil Instagram').item.json;\nconst mediaData = $('📸 Buscar posts recentes').item.json;\nconst insightsData = $('📈 Buscar insights da conta').item.json;\n\n// ── Calcula engajamento dos posts recentes ──\nconst posts = mediaData.data || [];\nlet totalEngRate = 0;\nlet totalReach = 0;\nlet totalImpressions = 0;\n\nposts.forEach(post => {\n  const likes = post.like_count || 0;\n  const comments = post.comments_count || 0;\n  const iData = post.insights?.data || [];\n  const saved = iData.find(i => i.name === 'saved')?.values?.[0]?.value || 0;\n  const reach = iData.find(i => i.name === 'reach')?.values?.[0]?.value || 1;\n  const impressions = iData.find(i => i.name === 'impressions')?.values?.[0]?.value || 0;\n  totalEngRate += ((likes + comments + saved) / reach) * 100;\n  totalReach += reach;\n  totalImpressions += impressions;\n});\n\nconst avgEngRate = posts.length > 0 ? totalEngRate / posts.length : 0;\nconst avgReach = posts.length > 0 ? Math.round(totalReach / posts.length) : 0;\n\n// ── Score de perfil (9 critérios) ──\nconst bio = profile.biography || '';\nconst username = profile.username || '';\nconst profileScore = {\n  photo: profile.profile_picture_url ? 'pass' : 'fail',\n  name_field: (profile.name && profile.name !== profile.username) ? 'pass' : 'needs-work',\n  handle: (username.length <= 20 && !/[0-9]{4,}/.test(username)) ? 'pass' : 'needs-work',\n  bio: bio.length >= 50 && bio.length <= 150 ? 'pass' : (bio.length > 0 ? 'needs-work' : 'fail'),\n  link: profile.website ? 'pass' : 'fail',\n  category: (profile.account_type === 'BUSINESS' || profile.account_type === 'CREATOR') ? 'pass' : 'needs-work',\n  highlights: 'needs-work',\n  grid: posts.length >= 9 ? 'needs-work' : 'fail',\n  pinned: 'needs-work'\n};\n\n// ── Sinais do algoritmo (score 0-100) ──\nconst algo = {\n  sends_score: avgEngRate > 5 ? 80 : avgEngRate > 3 ? 55 : avgEngRate > 1 ? 30 : 10,\n  saves_score: avgEngRate > 4 ? 70 : avgEngRate > 2 ? 45 : 20,\n  comments_score: Math.min(100, Math.round(avgEngRate * 15)),\n  likes_score: Math.min(100, Math.round(avgEngRate * 10)),\n  watch_time_score: 50,\n  early_window_score: 60\n};\n\n// ── Hashtags sugeridas ──\nconst hashtags = {\n  niche: ['#seunicho', '#segmentospecifico'],\n  mid: ['#categoriaconteudo', '#temacentral'],\n  broad: ['#instagram', '#conteudodigital']\n};\n\n// ── Melhores horários (BRT) ──\nconst timing = {\n  hot: [[1,3],[2,1],[3,3],[4,1],[5,3],[6,4],[0,2]],\n  warm: [[0,1],[1,1],[2,3],[3,3],[4,1],[5,2],[6,1]]\n};\n\n// ── Recomendações personalizadas ──\nconst recs = [];\nif (profileScore.bio !== 'pass')\n  recs.push({ icon: '📝', title: 'Otimize sua bio', desc: `Sua bio tem ${bio.length} chars. Use os 150 disponíveis com CTA, palavra-chave e emoji.`, urgency: 'urgent' });\nif (profileScore.link === 'fail')\n  recs.push({ icon: '🔗', title: 'Adicione link na bio', desc: 'Essencial para converter seguidores. Use Linktree ou uma landing page.', urgency: 'urgent' });\nif (avgEngRate < 3)\n  recs.push({ icon: '📲', title: 'Aumente seus Sends', desc: `Taxa de engajamento em ${avgEngRate.toFixed(2)}%. Foque em conteúdo que as pessoas queiram encaminhar.`, urgency: 'urgent' });\nrecs.push({ icon: '🕐', title: 'Poste entre 18h–20h', desc: 'Melhor janela para audiência brasileira. Responda comentários na primeira hora.', urgency: 'medium' });\nrecs.push({ icon: '💬', title: 'Responda comentários em 1h', desc: 'A janela das primeiras 60 minutos define quanto alcance o post terá.', urgency: 'medium' });\n\n// ── Objeto final que vai para o Supabase ──\nreturn [{ json: {\n  user_id: String(tokenData.user_id),\n  access_token: tokenData.access_token,\n  username: profile.username,\n  name: profile.name,\n  biography: bio,\n  followers_count: profile.followers_count || 0,\n  follows_count: profile.follows_count || 0,\n  media_count: profile.media_count || 0,\n  profile_picture_url: profile.profile_picture_url || null,\n  website: profile.website || null,\n  account_type: profile.account_type || null,\n  engagement_rate: parseFloat(avgEngRate.toFixed(2)),\n  avg_reach: avgReach,\n  total_impressions: totalImpressions,\n  profile_score: profileScore,\n  algo,\n  hashtags,\n  timing,\n  recommendations: recs\n}}];"
+      },
+      "id": "9b9e9a62-74f7-4375-a68e-d05fc022e839",
+      "name": "⚙️ Processar e calcular scores",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 160]
+    },
+    {
+      "parameters": {
+        "tableId": "ig_users",
+        "dataToSend": "autoMapInputData"
+      },
+      "id": "fa44c295-1fec-452e-ac58-a3c6ae1ceb2e",
+      "name": "💾 Salvar no Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [480, 160],
+      "credentials": {
+        "supabaseApi": {
+          "id": "pGykGEk9a1AWX4Nx",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"user_id\": \"{{ $('⚙️ Processar e calcular scores').item.json.user_id }}\",\n  \"username\": \"{{ $('⚙️ Processar e calcular scores').item.json.username }}\",\n  \"status\": \"connected\"\n}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              { "name": "Access-Control-Allow-Origin", "value": "https://instagram-alpha-self.vercel.app" },
+              { "name": "Content-Type", "value": "application/json" }
+            ]
+          }
+        }
+      },
+      "id": "ef2586ec-97c0-4292-8839-0cd462448e44",
+      "name": "✅ Responder - Auth OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [720, 160]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "ig_users",
+        "filterType": "string",
+        "filterString": "=user_id=eq.{{ $json.query.user_id }}"
+      },
+      "id": "38c583fe-87d4-4ddf-b839-e58d947a09af",
+      "name": "🔍 Carregar dados do Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [-240, 448],
+      "credentials": {
+        "supabaseApi": {
+          "id": "pGykGEk9a1AWX4Nx",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              { "name": "Access-Control-Allow-Origin", "value": "https://instagram-alpha-self.vercel.app" },
+              { "name": "Content-Type", "value": "application/json" }
+            ]
+          }
+        }
+      },
+      "id": "f0f05b8e-3459-4bcd-ba89-bcf857abfada",
+      "name": "📤 Responder - Dados do dashboard",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [0, 448]
     }
-    const userId = sessionCode || session.user_id;
-
-    // Show header actions
-    document.getElementById('header-actions').innerHTML = `
-      <button class="btn btn-ghost refresh-btn" onclick="loadDashboard('${userId}')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        Atualizar
-      </button>`;
-
-    await loadDashboard(userId);
-  } else {
-    document.getElementById('login-screen').style.display = 'flex';
+  ],
+  "connections": {
+    "🔐 Webhook - Recebe código OAuth": {
+      "main": [[{ "node": "🔄 Trocar código por token", "type": "main", "index": 0 }]]
+    },
+    "📊 Webhook - Busca dados do usuário": {
+      "main": [[{ "node": "🔍 Carregar dados do Supabase", "type": "main", "index": 0 }]]
+    },
+    "🔄 Trocar código por token": {
+      "main": [[
+        { "node": "👤 Buscar perfil Instagram", "type": "main", "index": 0 },
+        { "node": "📸 Buscar posts recentes", "type": "main", "index": 0 },
+        { "node": "📈 Buscar insights da conta", "type": "main", "index": 0 }
+      ]]
+    },
+    "👤 Buscar perfil Instagram": {
+      "main": [[{ "node": "⚙️ Processar e calcular scores", "type": "main", "index": 0 }]]
+    },
+    "📸 Buscar posts recentes": {
+      "main": [[{ "node": "⚙️ Processar e calcular scores", "type": "main", "index": 0 }]]
+    },
+    "📈 Buscar insights da conta": {
+      "main": [[{ "node": "⚙️ Processar e calcular scores", "type": "main", "index": 0 }]]
+    },
+    "⚙️ Processar e calcular scores": {
+      "main": [[{ "node": "💾 Salvar no Supabase", "type": "main", "index": 0 }]]
+    },
+    "💾 Salvar no Supabase": {
+      "main": [[{ "node": "✅ Responder - Auth OK", "type": "main", "index": 0 }]]
+    },
+    "🔍 Carregar dados do Supabase": {
+      "main": [[{ "node": "📤 Responder - Dados do dashboard", "type": "main", "index": 0 }]]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "92b955f0bf6bf25ee164d4acd964a5dbfa569c74f2f78f88afcbc28d2942287b"
   }
 }
-
-init();
-</script>
-</body>
-</html>
