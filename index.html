@@ -549,6 +549,27 @@ img { max-width: 100%; }
   margin-top: 20px; display: flex; flex-direction: column; gap: 14px;
 }
 .tool-output.hidden { display: none; }
+/* Niche Agent */
+.niche-loading { text-align:center; padding:32px 16px; color:var(--fg2); font-size:14px; }
+.niche-loading .niche-spinner { font-size:28px; display:block; margin-bottom:10px; animation: spin 1.5s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.niche-section { margin-bottom:18px; }
+.niche-section-title { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--fg2); margin-bottom:10px; }
+.niche-stat-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+.niche-stat { background:var(--surface2); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:10px 14px; flex:1; min-width:80px; text-align:center; }
+.niche-stat-n { font-size:20px; font-weight:700; color:var(--accent); }
+.niche-stat-l { font-size:11px; color:var(--fg2); margin-top:2px; }
+.niche-format-bar { display:flex; gap:6px; margin-bottom:8px; }
+.niche-fmt { flex:1; background:var(--surface2); border:1.5px solid var(--border); border-radius:8px; padding:8px 10px; font-size:12px; text-align:center; }
+.niche-fmt strong { display:block; font-size:16px; color:var(--accent3); }
+.niche-pattern { background:var(--surface2); border-left:3px solid var(--accent); border-radius:var(--radius-sm); padding:10px 14px; font-size:13px; margin-bottom:8px; }
+.niche-hashtags { display:flex; flex-wrap:wrap; gap:6px; }
+.niche-tag { background:linear-gradient(135deg,var(--accent3),var(--accent)); color:#fff; border-radius:20px; padding:4px 12px; font-size:12px; font-weight:600; }
+.niche-top-post { background:var(--surface2); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:12px; margin-bottom:8px; }
+.niche-top-post-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.niche-top-post-user { font-size:13px; font-weight:600; }
+.niche-top-post-stats { font-size:12px; color:var(--fg2); }
+.niche-top-post-caption { font-size:12px; color:var(--fg2); line-height:1.5; }
 .output-card {
   background: var(--surface2); border: 1.5px solid var(--border);
   border-radius: var(--radius-sm); padding: 16px; position: relative;
@@ -893,6 +914,7 @@ img { max-width: 100%; }
         <button class="tool-tab" onclick="switchTool('planner')">📅 Plano</button>
         <button class="tool-tab" onclick="switchTool('repurpose')">♻️ Repurpose</button>
         <button class="tool-tab" onclick="switchTool('profile')">👤 Perfil</button>
+        <button class="tool-tab" onclick="switchTool('niche')">🔍 Nicho</button>
       </div>
 
       <!-- ── CAPTION WRITER ── -->
@@ -1114,6 +1136,38 @@ img { max-width: 100%; }
           <button class="btn btn-primary" onclick="runProfileOptimizer()">👤 Auditar perfil</button>
         </div>
         <div id="po-output" class="tool-output hidden"></div>
+      </div>
+
+      <!-- ── NICHE AGENT ── -->
+      <div class="tool-panel" id="tool-niche">
+        <div class="tool-desc">Agente de análise de nicho: varre os posts mais performáticos de qualquer hashtag ou perfil do Instagram e entrega os padrões que geram mais engajamento.</div>
+        <div class="tool-form">
+          <div class="form-row">
+            <label>Modo de análise</label>
+            <select id="na-mode" onchange="toggleNicheMode(this.value)">
+              <option value="hashtag">Por hashtag</option>
+              <option value="profile">Por perfil</option>
+            </select>
+          </div>
+          <div class="form-row" id="na-hashtag-row">
+            <label>Hashtag do nicho (sem #)</label>
+            <input type="text" id="na-hashtag" placeholder="ex: retiroyoga, marketingdigital, fitnessbrasil">
+          </div>
+          <div class="form-row hidden" id="na-profile-row">
+            <label>Username do perfil (sem @)</label>
+            <input type="text" id="na-profile" placeholder="ex: leomesssi, redcanoebrands">
+          </div>
+          <div class="form-row">
+            <label>Quantidade de posts a analisar</label>
+            <select id="na-limit">
+              <option value="10">10 posts (rápido)</option>
+              <option value="20" selected>20 posts (recomendado)</option>
+              <option value="30">30 posts (profundo)</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="runNicheAgent()">🔍 Analisar Nicho</button>
+        </div>
+        <div id="na-output" class="tool-output hidden"></div>
       </div>
     </div>
 
@@ -1481,12 +1535,18 @@ async function loadPosts(userId, forceRefresh = false) {
   grid.innerHTML = '<div class="posts-loading">📸 Carregando seus posts...</div>';
 
   try {
-    const res = await fetchJSON(`${CONFIG.N8N_WEBHOOK_BASE}/instagram-posts?user_id=${userId}`);
+    const r = await fetch(`${CONFIG.N8N_WEBHOOK_BASE}/instagram-posts?user_id=${userId}`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const text = await r.text();
+    if (!text || !text.trim()) throw new Error('Resposta vazia do servidor');
+    let res;
+    try { res = JSON.parse(text); } catch(e) { throw new Error('JSON inválido: ' + text.slice(0, 80)); }
     const posts = Array.isArray(res) ? res : (res.data || res.posts || []);
     cachedPosts = posts;
     renderPostsGrid(posts);
   } catch(e) {
     grid.innerHTML = `<div class="posts-empty">Não foi possível carregar os posts.<br><small style="color:var(--fg3)">${e.message}</small></div>`;
+    console.error('[loadPosts]', e);
   }
 }
 
@@ -1691,6 +1751,19 @@ function switchTool(name) {
   document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tool-' + name).classList.add('active');
   event.currentTarget.classList.add('active');
+
+  // Auto-preenche hashtag ao abrir aba Nicho
+  if (name === 'niche') {
+    const field = document.getElementById('na-hashtag');
+    if (field && !field.value) {
+      const detected = autoDetectNiche();
+      if (detected.length) {
+        field.value = detected[0];
+        field.style.borderColor = 'var(--accent3)';
+        setTimeout(() => { field.style.borderColor = ''; }, 2000);
+      }
+    }
+  }
 }
 
 function copyOutputCard(btn, text) {
@@ -2384,6 +2457,214 @@ function buildProfileAudit(goal, bio, name, keyword, handle, followers) {
     },
   ];
 }
+
+// ══════════════════════════════════════════════════
+// NICHE AGENT — Análise automática via Apify + n8n
+// ══════════════════════════════════════════════════
+
+function toggleNicheMode(mode) {
+  document.getElementById('na-hashtag-row').classList.toggle('hidden', mode !== 'hashtag');
+  document.getElementById('na-profile-row').classList.toggle('hidden', mode !== 'profile');
+}
+
+function extractHashtagsFromCaptions(posts) {
+  const freq = {};
+  (posts || []).forEach(p => {
+    const caption = p.caption || '';
+    const tags = caption.match(/#[\wÀ-ÿ]+/g) || [];
+    tags.forEach(t => { const k = t.toLowerCase(); freq[k] = (freq[k] || 0) + 1; });
+  });
+  return Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([tag]) => tag.replace('#', ''));
+}
+
+function autoDetectNiche() {
+  // Pega hashtags dos posts em cache ou da bio
+  const topHashtags = extractHashtagsFromCaptions(cachedPosts || []);
+  const bio = (() => { try { return (JSON.parse(localStorage.getItem('ig_session') || '{}')).biography || ''; } catch(e) { return ''; } })();
+
+  if (topHashtags.length > 0) return topHashtags;
+
+  // Fallback: palavras-chave da bio
+  const bioWords = bio.toLowerCase().match(/[a-záéíóúàãõâêôçñü]{4,}/g) || [];
+  return bioWords.slice(0, 3);
+}
+
+async function runNicheAgent() {
+  const mode = document.getElementById('na-mode').value;
+  const limit = document.getElementById('na-limit').value;
+  const out = document.getElementById('na-output');
+
+  let query = '';
+  if (mode === 'hashtag') {
+    query = document.getElementById('na-hashtag').value.trim().replace(/^#/, '');
+  } else {
+    query = document.getElementById('na-profile').value.trim().replace(/^@/, '');
+  }
+
+  // Auto-detecta se campo estiver vazio
+  if (!query) {
+    const detected = autoDetectNiche();
+    if (!detected.length) {
+      alert('Digite uma hashtag ou username para analisar.');
+      return;
+    }
+    query = detected[0];
+    if (mode === 'hashtag') {
+      document.getElementById('na-hashtag').value = query;
+    }
+  }
+
+  out.classList.remove('hidden');
+  out.innerHTML = `<div class="niche-loading">
+    <span class="niche-spinner">🔍</span>
+    Analisando "${query}" no Instagram via Apify...<br>
+    <small style="color:var(--fg3);margin-top:6px;display:block">Isso pode levar 20–40 segundos</small>
+  </div>`;
+  out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  try {
+    const res = await fetch(`${CONFIG.N8N_WEBHOOK_BASE}/niche-insights`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode, query, limit: parseInt(limit) }),
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const text = await res.text();
+    if (!text || !text.trim()) throw new Error('Resposta vazia do servidor');
+    const data = JSON.parse(text);
+    renderNicheResults(data, query, mode);
+  } catch(e) {
+    out.innerHTML = `<div class="output-card" style="border-left:3px solid var(--red)">
+      <div class="output-card-label">❌ Erro na análise</div>
+      <div class="output-card-body" style="font-size:13px">${e.message}<br><br>
+      Verifique se o workflow <code>niche-insights</code> está ativo no n8n.</div>
+    </div>`;
+    console.error('[runNicheAgent]', e);
+  }
+}
+
+function renderNicheResults(data, query, mode) {
+  const out = document.getElementById('na-output');
+  const posts = data.posts || [];
+  const total = posts.length;
+
+  if (!total) {
+    out.innerHTML = `<div class="output-card">
+      <div class="output-card-label">Sem resultados</div>
+      <div class="output-card-body">Nenhum post encontrado para "${query}". Tente outra hashtag.</div>
+    </div>`;
+    return;
+  }
+
+  // Estatísticas gerais
+  const avgLikes = Math.round(posts.reduce((s, p) => s + (p.likes || p.likesCount || 0), 0) / total);
+  const avgComments = Math.round(posts.reduce((s, p) => s + (p.comments || p.commentsCount || 0), 0) / total);
+  const topPost = [...posts].sort((a, b) => (b.likes || b.likesCount || 0) - (a.likes || a.likesCount || 0))[0];
+
+  // Formato dominante
+  const formats = {};
+  posts.forEach(p => {
+    const t = p.type || p.productType || (p.isVideo ? 'VIDEO' : p.isSidecar ? 'CAROUSEL' : 'IMAGE');
+    const label = t.includes('CAROUSEL') || t === 'sidecar' ? 'Carrossel' :
+                  t.includes('VIDEO') || t === 'video' ? 'Reel/Vídeo' : 'Foto';
+    formats[label] = (formats[label] || 0) + 1;
+  });
+  const fmtEntries = Object.entries(formats).sort((a,b) => b[1]-a[1]);
+
+  // Hashtags mais usadas nos posts analisados
+  const tagFreq = {};
+  posts.forEach(p => {
+    const caption = p.caption || p.text || '';
+    (caption.match(/#[\wÀ-ÿ]+/g) || []).forEach(t => {
+      const k = t.toLowerCase();
+      tagFreq[k] = (tagFreq[k] || 0) + 1;
+    });
+    (p.hashtags || []).forEach(t => {
+      const k = ('#' + t).toLowerCase();
+      tagFreq[k] = (tagFreq[k] || 0) + 1;
+    });
+  });
+  const topTags = Object.entries(tagFreq).sort((a,b) => b[1]-a[1]).slice(0, 12).map(([t]) => t);
+
+  // Padrões de CTA
+  const ctaPatterns = ['comentem', 'comenta', 'salva', 'compartilha', 'marca', 'siga', 'link na bio', 'direct'];
+  const foundCTAs = ctaPatterns.filter(cta =>
+    posts.some(p => (p.caption || p.text || '').toLowerCase().includes(cta))
+  );
+
+  // Top 3 posts
+  const top3 = [...posts]
+    .sort((a,b) => ((b.likes||b.likesCount||0)+(b.comments||b.commentsCount||0)*3) - ((a.likes||a.likesCount||0)+(a.comments||a.commentsCount||0)*3))
+    .slice(0, 3);
+
+  out.innerHTML = `
+    <div class="output-card">
+      <div class="output-card-label">🔍 Análise de nicho — ${mode === 'hashtag' ? '#' : '@'}${query} · ${total} posts</div>
+
+      <div class="niche-section">
+        <div class="niche-section-title">📊 Médias do nicho</div>
+        <div class="niche-stat-row">
+          <div class="niche-stat"><div class="niche-stat-n">${fmtNum(avgLikes)}</div><div class="niche-stat-l">Likes médios</div></div>
+          <div class="niche-stat"><div class="niche-stat-n">${fmtNum(avgComments)}</div><div class="niche-stat-l">Comentários médios</div></div>
+          <div class="niche-stat"><div class="niche-stat-n">${total}</div><div class="niche-stat-l">Posts analisados</div></div>
+        </div>
+      </div>
+
+      <div class="niche-section">
+        <div class="niche-section-title">📐 Formatos dominantes</div>
+        <div class="niche-format-bar">
+          ${fmtEntries.map(([label, count]) => `
+            <div class="niche-fmt">
+              <strong>${Math.round(count/total*100)}%</strong>
+              ${label}
+            </div>`).join('')}
+        </div>
+      </div>
+
+      ${foundCTAs.length ? `
+      <div class="niche-section">
+        <div class="niche-section-title">💬 CTAs que aparecem no nicho</div>
+        ${foundCTAs.map(cta => `<div class="niche-pattern">📌 "${cta}" — encontrado em posts de alto engajamento</div>`).join('')}
+      </div>` : ''}
+
+      ${topTags.length ? `
+      <div class="niche-section">
+        <div class="niche-section-title">#️⃣ Hashtags mais usadas no nicho</div>
+        <div class="niche-hashtags">
+          ${topTags.map(t => `<span class="niche-tag">${t}</span>`).join('')}
+        </div>
+      </div>` : ''}
+
+      <div class="niche-section">
+        <div class="niche-section-title">🏆 Top posts do nicho</div>
+        ${top3.map(p => {
+          const user = p.ownerUsername || p.username || '—';
+          const likes = p.likes || p.likesCount || 0;
+          const comments = p.comments || p.commentsCount || 0;
+          const caption = (p.caption || p.text || '').slice(0, 120);
+          return `<div class="niche-top-post">
+            <div class="niche-top-post-header">
+              <span class="niche-top-post-user">@${user}</span>
+              <span class="niche-top-post-stats">❤️ ${fmtNum(likes)} · 💬 ${fmtNum(comments)}</span>
+            </div>
+            ${caption ? `<div class="niche-top-post-caption">${escapeHtml(caption)}${caption.length === 120 ? '…' : ''}</div>` : ''}
+          </div>`;
+        }).join('')}
+      </div>
+
+      <div class="niche-pattern" style="border-color:var(--accent3);margin-top:4px">
+        💡 <strong>Recomendação:</strong> ${fmtEntries[0] ? fmtEntries[0][0] + 's dominam ' + Math.round(fmtEntries[0][1]/total*100) + '% dos posts. ' : ''}
+        ${avgComments > avgLikes * 0.05 ? 'Alto volume de comentários — CTAs diretos funcionam bem neste nicho.' : 'Likes superam comentários — conteúdo educativo/salvo performa bem.'}
+      </div>
+    </div>`;
+}
+
+// ── Auto-preenche hashtag se aba nicho for aberta ──
+const _origSwitchTool = window.switchTool;
 
 // ══════════════════════════════════════════════════
 // Init
