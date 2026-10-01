@@ -2632,16 +2632,24 @@ function renderNicheResults(data, query, mode) {
 
       ${top3.length ? `
       <div class="niche-section">
-        <div class="niche-section-title">🏆 Top posts por engajamento</div>
-        ${top3.map(p => {
-          const caption = (p.caption || '').slice(0, 120);
+        <div class="niche-section-title">🏆 Todos os posts analisados (por engajamento)</div>
+        ${top3.map((p, i) => {
+          const caption = (p.caption || '').slice(0, 220);
+          const totalEng = (p.likes||0) + (p.comments||0);
+          const engRate = profileInfo?.followers ? ((totalEng / profileInfo.followers) * 100).toFixed(1) : null;
+          const fmtIcon = p.type === 'Video' ? '🎬' : p.type === 'Sidecar' ? '📱' : '🖼️';
+          const fmtLabel = p.type === 'Video' ? 'Reel/Vídeo' : p.type === 'Sidecar' ? 'Carrossel' : 'Foto';
+          const medalha = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
           return `<div class="niche-top-post">
             <div class="niche-top-post-header">
-              <span class="niche-top-post-user">@${p.username || '—'}</span>
-              <span class="niche-top-post-stats">❤️ ${fmtNum(p.likes||0)} · 💬 ${fmtNum(p.comments||0)}</span>
+              <span class="niche-top-post-user">${medalha} @${p.username || '—'} <span style="font-weight:400;font-size:11px;color:var(--fg3)">${fmtIcon} ${fmtLabel}</span></span>
+              <span class="niche-top-post-stats">❤️ ${fmtNum(p.likes||0)} · 💬 ${fmtNum(p.comments||0)}${engRate ? ` · <strong style="color:var(--accent3)">${engRate}% ER</strong>` : ''}</span>
             </div>
-            ${caption ? `<div class="niche-top-post-caption">${escapeHtml(caption)}${caption.length === 120 ? '…' : ''}</div>` : ''}
-            ${p.url ? `<a href="${p.url}" target="_blank" style="font-size:11px;color:var(--accent)">Ver post ↗</a>` : ''}
+            ${caption ? `<div class="niche-top-post-caption" style="margin:6px 0 4px">${escapeHtml(caption)}${(p.caption||'').length > 220 ? '…' : ''}</div>` : ''}
+            <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+              ${p.url ? `<a href="${p.url}" target="_blank" style="font-size:11px;color:var(--accent);font-weight:600">Ver post ↗</a>` : ''}
+              ${p.timestamp ? `<span style="font-size:11px;color:var(--fg3)">${new Date(p.timestamp).toLocaleDateString('pt-BR')}</span>` : ''}
+            </div>
           </div>`;
         }).join('')}
       </div>` : ''}
