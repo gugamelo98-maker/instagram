@@ -2549,61 +2549,50 @@ async function runNicheAgent() {
 
 function renderNicheResults(data, query, mode) {
   const out = document.getElementById('na-output');
-  const posts = data.posts || [];
-  const total = posts.length;
 
-  if (!total) {
+  // n8n retorna: ok, postsAnalyzed, avgLikes, avgComments, formatBreakdown, topHashtags, ctaPatterns, topPosts
+  if (!data.ok || !data.postsAnalyzed) {
     out.innerHTML = `<div class="output-card">
       <div class="output-card-label">Sem resultados</div>
-      <div class="output-card-body">Nenhum post encontrado para "${query}". Tente outra hashtag.</div>
+      <div class="output-card-body">Nenhum post encontrado para "${query}". Tente outro ${mode === 'hashtag' ? 'hashtag' : 'perfil'}.</div>
     </div>`;
     return;
   }
 
-  // Estatísticas gerais
-  const avgLikes = Math.round(posts.reduce((s, p) => s + (p.likes || p.likesCount || 0), 0) / total);
-  const avgComments = Math.round(posts.reduce((s, p) => s + (p.comments || p.commentsCount || 0), 0) / total);
-  const topPost = [...posts].sort((a, b) => (b.likes || b.likesCount || 0) - (a.likes || a.likesCount || 0))[0];
+  const total = data.postsAnalyzed || 0;
+  const avgLikes = data.avgLikes || 0;
+  const avgComments = data.avgComments || 0;
+  const fmt = data.formatBreakdown || {};
+  const topTags = data.topHashtags || [];
+  const ctaPatterns = data.ctaPatterns || [];
+  const top3 = data.topPosts || [];
+  const profileInfo = data.profileInfo || null;
 
-  // Formato dominante
-  const formats = {};
-  posts.forEach(p => {
-    const t = p.type || p.productType || (p.isVideo ? 'VIDEO' : p.isSidecar ? 'CAROUSEL' : 'IMAGE');
-    const label = t.includes('CAROUSEL') || t === 'sidecar' ? 'Carrossel' :
-                  t.includes('VIDEO') || t === 'video' ? 'Reel/Vídeo' : 'Foto';
-    formats[label] = (formats[label] || 0) + 1;
-  });
-  const fmtEntries = Object.entries(formats).sort((a,b) => b[1]-a[1]);
+  // Formatos como array ordenado
+  const fmtEntries = [
+    ['Carrossel', fmt.carousel || 0],
+    ['Reel/Vídeo', fmt.reel || 0],
+    ['Foto', fmt.photo || 0]
+  ].filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
 
-  // Hashtags mais usadas nos posts analisados
-  const tagFreq = {};
-  posts.forEach(p => {
-    const caption = p.caption || p.text || '';
-    (caption.match(/#[\wÀ-ÿ]+/g) || []).forEach(t => {
-      const k = t.toLowerCase();
-      tagFreq[k] = (tagFreq[k] || 0) + 1;
-    });
-    (p.hashtags || []).forEach(t => {
-      const k = ('#' + t).toLowerCase();
-      tagFreq[k] = (tagFreq[k] || 0) + 1;
-    });
-  });
-  const topTags = Object.entries(tagFreq).sort((a,b) => b[1]-a[1]).slice(0, 12).map(([t]) => t);
-
-  // Padrões de CTA
-  const ctaPatterns = ['comentem', 'comenta', 'salva', 'compartilha', 'marca', 'siga', 'link na bio', 'direct'];
-  const foundCTAs = ctaPatterns.filter(cta =>
-    posts.some(p => (p.caption || p.text || '').toLowerCase().includes(cta))
-  );
-
-  // Top 3 posts
-  const top3 = [...posts]
-    .sort((a,b) => ((b.likes||b.likesCount||0)+(b.comments||b.commentsCount||0)*3) - ((a.likes||a.likesCount||0)+(a.comments||a.commentsCount||0)*3))
-    .slice(0, 3);
+  const dominante = fmtEntries[0];
+  const recomendacao = avgComments > avgLikes * 0.05
+    ? 'Alto volume de comentários — CTAs diretos funcionam bem neste nicho.'
+    : 'Likes superam comentários — conteúdo educativo/salvo tende a performar melhor.';
 
   out.innerHTML = `
     <div class="output-card">
-      <div class="output-card-label">🔍 Análise de nicho — ${mode === 'hashtag' ? '#' : '@'}${query} · ${total} posts</div>
+      <div class="output-card-label">🔍 Análise — ${mode === 'hashtag' ? '#' : '@'}${query} · ${total} posts</div>
+
+      ${profileInfo ? `
+      <div class="niche-section">
+        <div class="niche-section-title">👤 Perfil</div>
+        <div class="niche-stat-row">
+          <div class="niche-stat"><div class="niche-stat-n">${fmtNum(profileInfo.followers||0)}</div><div class="niche-stat-l">Seguidores</div></div>
+          <div class="niche-stat"><div class="niche-stat-n">${profileInfo.postsCount||0}</div><div class="niche-stat-l">Posts</div></div>
+        </div>
+        ${profileInfo.bio ? `<div class="niche-pattern" style="font-size:12px">${escapeHtml(profileInfo.bio)}</div>` : ''}
+      </div>` : ''}
 
       <div class="niche-section">
         <div class="niche-section-title">📊 Médias do nicho</div>
@@ -2614,51 +2603,47 @@ function renderNicheResults(data, query, mode) {
         </div>
       </div>
 
+      ${fmtEntries.length ? `
       <div class="niche-section">
         <div class="niche-section-title">📐 Formatos dominantes</div>
         <div class="niche-format-bar">
-          ${fmtEntries.map(([label, count]) => `
-            <div class="niche-fmt">
-              <strong>${Math.round(count/total*100)}%</strong>
-              ${label}
-            </div>`).join('')}
+          ${fmtEntries.map(([label, pct]) => `
+            <div class="niche-fmt"><strong>${pct}%</strong>${label}</div>`).join('')}
         </div>
-      </div>
+      </div>` : ''}
 
-      ${foundCTAs.length ? `
+      ${ctaPatterns.length ? `
       <div class="niche-section">
         <div class="niche-section-title">💬 CTAs que aparecem no nicho</div>
-        ${foundCTAs.map(cta => `<div class="niche-pattern">📌 "${cta}" — encontrado em posts de alto engajamento</div>`).join('')}
+        ${ctaPatterns.map(c => `<div class="niche-pattern">📌 "${c.pattern}" — ${c.count} post${c.count > 1 ? 's' : ''}</div>`).join('')}
       </div>` : ''}
 
       ${topTags.length ? `
       <div class="niche-section">
-        <div class="niche-section-title">#️⃣ Hashtags mais usadas no nicho</div>
+        <div class="niche-section-title">#️⃣ Hashtags mais usadas</div>
         <div class="niche-hashtags">
-          ${topTags.map(t => `<span class="niche-tag">${t}</span>`).join('')}
+          ${topTags.map(t => `<span class="niche-tag">#${t}</span>`).join('')}
         </div>
       </div>` : ''}
 
+      ${top3.length ? `
       <div class="niche-section">
-        <div class="niche-section-title">🏆 Top posts do nicho</div>
+        <div class="niche-section-title">🏆 Top posts por engajamento</div>
         ${top3.map(p => {
-          const user = p.ownerUsername || p.username || '—';
-          const likes = p.likes || p.likesCount || 0;
-          const comments = p.comments || p.commentsCount || 0;
-          const caption = (p.caption || p.text || '').slice(0, 120);
+          const caption = (p.caption || '').slice(0, 120);
           return `<div class="niche-top-post">
             <div class="niche-top-post-header">
-              <span class="niche-top-post-user">@${user}</span>
-              <span class="niche-top-post-stats">❤️ ${fmtNum(likes)} · 💬 ${fmtNum(comments)}</span>
+              <span class="niche-top-post-user">@${p.username || '—'}</span>
+              <span class="niche-top-post-stats">❤️ ${fmtNum(p.likes||0)} · 💬 ${fmtNum(p.comments||0)}</span>
             </div>
             ${caption ? `<div class="niche-top-post-caption">${escapeHtml(caption)}${caption.length === 120 ? '…' : ''}</div>` : ''}
+            ${p.url ? `<a href="${p.url}" target="_blank" style="font-size:11px;color:var(--accent)">Ver post ↗</a>` : ''}
           </div>`;
         }).join('')}
-      </div>
+      </div>` : ''}
 
       <div class="niche-pattern" style="border-color:var(--accent3);margin-top:4px">
-        💡 <strong>Recomendação:</strong> ${fmtEntries[0] ? fmtEntries[0][0] + 's dominam ' + Math.round(fmtEntries[0][1]/total*100) + '% dos posts. ' : ''}
-        ${avgComments > avgLikes * 0.05 ? 'Alto volume de comentários — CTAs diretos funcionam bem neste nicho.' : 'Likes superam comentários — conteúdo educativo/salvo performa bem.'}
+        💡 <strong>Recomendação:</strong> ${dominante ? dominante[0] + 's dominam ' + dominante[1] + '% dos posts. ' : ''}${recomendacao}
       </div>
     </div>`;
 }
