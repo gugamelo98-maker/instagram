@@ -2610,6 +2610,13 @@ function renderNicheResults(data, query, mode) {
     ? 'Alto volume de comentários — CTAs diretos funcionam bem neste nicho.'
     : 'Likes superam comentários — conteúdo educativo/salvo tende a performar melhor.';
 
+  // Salva meta para uso nos botões inline (evita closure problem em onclick)
+  window._lastNicheMeta = {
+    followers: profileInfo?.followers, postsCount: profileInfo?.postsCount,
+    bio: profileInfo?.bio, avgLikes, avgComments,
+    topHashtags: topTags, formatBreakdown: fmt
+  };
+
   out.innerHTML = `
     <div class="output-card">
       <div class="output-card-label">🔍 Análise — ${mode === 'hashtag' ? '#' : '@'}${query} · ${total} posts</div>
@@ -2686,10 +2693,10 @@ function renderNicheResults(data, query, mode) {
 
       ${mode === 'profile' ? `
       <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-secondary" onclick="findSimilarProfiles('${query}', ${JSON.stringify(topTags)})">
+        <button class="btn btn-secondary" onclick="findSimilarProfiles('${query}', window._lastNicheMeta?.topHashtags)">
           🔎 Buscar perfis semelhantes
         </button>
-        <button class="btn btn-secondary" onclick="saveNicheProfile('${query}', ${JSON.stringify({followers: profileInfo?.followers, postsCount: profileInfo?.postsCount, bio: profileInfo?.bio, avgLikes, avgComments, topHashtags: topTags, formatBreakdown})})" id="btn-save-${query}">
+        <button class="btn btn-secondary" onclick="saveNicheProfile('${query}', window._lastNicheMeta)" id="btn-save-${query}">
           💾 Salvar na base de conhecimento
         </button>
       </div>` : ''}
